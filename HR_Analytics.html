@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Analytics Quiz Game</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <h1><a href="./index.html" style="color: rgb(19, 109, 145); padding: 20px; margin-left: 10px;">Back</a></h1>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Data: All 240 Questions (with answers as arrays) ---
+        const allQuestions = [
+            // --- FOUNDATIONAL LEVELS (1-12) ---
+            { question: "What quadrant in the impact-complexity matrix corresponds to low impact, low complexity?", options: ["Quick win", "Big bet", "Pet project", "Trivial endeavor"], answer: ["Trivial endeavor"] },
+            { question: "Which factor is part of assessing the impact of a project?", options: ["Technology readiness", "Number of HR staff", "Return on investment", "Analytics tools used"], answer: ["Return on investment"] },
+            { question: "What skill set includes problem definition and stakeholder management?", options: ["Data science", "Communication", "Consulting", "HR administration"], answer: ["Consulting"] },
+            { question: "What describes business acumen in HR analytics capabilities?", options: ["Coding proficiency", "Understanding internal and external environments", "Regression analysis skills", "Chart generation"], answer: ["Understanding internal and external environments"] },
+            { question: "What should a metric explicitly indicate besides the source?", options: ["Its cost", "The user", "What it is used for", "Color coding"], answer: ["What it is used for"] },
+            { question: "Which tool is not typically used in descriptive analytics?", options: ["Counts", "Averages", "Regression", "Standard deviation"], answer: ["Regression"] },
+            { question: "What is a key distinction between MIS and HR Analytics?", options: ["Data storage capabilities", "Analytical potential connecting HR to organizational performance", "Cost efficiency", "Report formatting"], answer: ["Analytical potential connecting HR to organizational performance"] },
+            { question: "What is a common bias where decision-makers ignore data that contradicts their beliefs?", options: ["Overfitting", "Sampling bias", "Confirmation trap", "Availability heuristic"], answer: ["Confirmation trap"] },
+            { question: "State True or False: What HR data element involves numerical form and structure is structured numerical data.", options: ["True", "False"], answer: ["True"] },
+            { question: "What is the term for organising and loading structured data for analysis? ________.", options: ["Uploading", "Warehousing", "ETL", "Parsing"], answer: ["ETL"] },
+            { question: "What is the first step in data analytics?", options: ["Data visualization", "Data cleaning", "Data collection", "Data interpretation"], answer: ["Data collection"] },
+            { question: "What does HRMIS stand for?", options: ["Human Resource Main Internet System", "Human Resource Machine Interface System", "Human Resource Management Information System", "High Resource Management and Intelligence System"], answer: ["Human Resource Management Information System"] },
+            { question: "Why is beautifying a chart important?", options: ["For Excel performance", "For aesthetic and presentation clarity", "To increase data size", "To track HR policies"], answer: ["For aesthetic and presentation clarity"] },
+            { question: "What is the correct order for using Excel for visualisation?", options: ["Chart > Analyze > Collect Data > Report", "Report > Visualize > Collect", "Identify Questions > Variables > Data Collection > Visualization", "Format > Analyze > Research"], answer: ["Identify Questions > Variables > Data Collection > Visualization"] },
+            { question: "Which statement is FALSE about pivot tables?", options: ["You must write formulas to use them", "They help create quick summaries", "They support count, average, and sum functions", "They are useful in report writing"], answer: ["You must write formulas to use them"] },
+            { question: "State True and False R and Data Studio are open-source visualisation tools.", options: ["True", "False"], answer: ["True"] },
+            { question: "A good visualisation strategy should begin with understanding the _____ asked by managers.", options: ["Tools", "Software", "Questions", "Reports"], answer: ["Questions"] },
+            { question: "What is the main objective of visualising HR data in Power BI?", options: ["To filter records", "To format text", "To generate insights and tell stories", "To create invoices"], answer: ["To generate insights and tell stories"] },
+            { question: "In Excel, which feature gives automatic summary suggestions?", options: ["Pie Chart", "Filters", "Recommended Pivot Table", "Conditional Formatting"], answer: ["Recommended Pivot Table"] },
+            { question: "State True OR False The “Source of Application” variable helps understand where applicants are currently working.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is part of applicant analysis?", options: ["Resignation reasons", "Expected salary", "Previous employer's name", "Social media profile"], answer: ["Expected salary"] },
+            { question: "What does CPP stand for in succession planning?", options: ["Candidate Potential Program", "Current Perception of Potential", "Career Promotion Pipeline", "Current Performance Profile"], answer: ["Current Perception of Potential"] },
+            { question: "What cost is associated with external hires in succession planning?", options: ["Advertising cost", "Percentage hike in salary", "Infrastructure cost", "Commute allowance"], answer: ["Percentage hike in salary"] },
+            { question: "What is the recruitment planning matrix used for?", options: ["Calculating incentives", "Deciding on layoffs", "Forecasting staffing needs", "Replacing equipment"], answer: ["Forecasting staffing needs"] },
+            { question: "Which perception data source is likely to be unbiased in recruitment?", options: ["Rejected candidates", "Selected candidates", "HR managers", "New joiners"], answer: ["Rejected candidates"] },
+            { question: "What is part of modern recruiting as per LinkedIn's example?", options: ["Cold calling", "Personalized online relationships", "Headhunting agencies only", "Relying on resumes"], answer: ["Personalized online relationships"] },
+            { question: "What is a disadvantage mentioned about internal policies?", options: ["High salaries", "A conservative nature may deter applicants", "Overuse of job boards", "Frequent promotions"], answer: ["A conservative nature may deter applicants"] },
+            { question: "The term that reflects hiring without external promotion is ________.", options: ["Hidden hiring", "Passive candidate attraction", "No-advertisement recruitment", "Anonymous selection"], answer: ["No-advertisement recruitment"] },
+            { question: "What should guide the number of interviews conducted?", options: ["Industry benchmarks", "Candidate's GPA", "Role complexity", "Recruiter experience"], answer: ["Role complexity"] },
+            { question: "State True or False: Political conditions are part of the external environment impacting recruitment.", options: ["True", "False"], answer: ["True"] },
+            { question: "What does the 'Plan fulfilment ratio' evaluate?", options: ["Candidate preference", "Hiring target achievement", "Diversity quotient", "Time to fill vacancies"], answer: ["Hiring target achievement"] },
+            { question: "What is the core issue with relying on generic competency models?", options: ["They increase interview costs", "They fail to specify unique job requirements", "They attract too many applicants", "They are legally non-compliant"], answer: ["They fail to specify unique job requirements"] },
+            { question: "Which metric tracks employee happiness post-hire?", options: ["Job search intensity", "Employer Brand Index", "Employee Happiness Index", "Diversity Matrix"], answer: ["Employee Happiness Index"] },
+            { question: "Which selection standard ensures a test measure what it claims to?", options: ["Reliability", "Validity", "Utility", "Suitability"], answer: ["Validity"] },
+            { question: "Which is a typical poor practice in integrating newcomers?", options: ["Providing mentors", "Assuming “plug and play” readiness", "Rewarding onboarding leaders", "Allowing adjustment time"], answer: ["Assuming “plug and play” readiness"] },
+            { question: "What are included in surface diversity?", options: ["Beliefs and values", "Work attitudes", "Education and gender", "Motivation levels"], answer: ["Education and gender"] },
+            { question: "Which of the following defines a panel interview?", options: ["Informal, unstructured questioning", "Focus on extreme stress responses", "Multiple interviewers evaluate a candidate together", "Evaluation based on a job simulation"], answer: ["Multiple interviewers evaluate a candidate together"] },
+            { question: "In Indian selection, what is a challenge?", options: ["Overqualified workforce", "External influences, and biases", "Transparent procedures", "Excessive test usage"], answer: ["External influences, and biases"] },
+            { question: "A crucial aspect for the effective functioning of an expert system is a ________.", options: ["Length of application form", "Strict legal guidelines", "Comprehensive knowledge base", "Large interview panel"], answer: ["Comprehensive knowledge base"] },
+            { question: "A polygraph test measures honesty through physiological responses.", options: ["True", "False"], answer: ["True"] },
+            { question: "Which source fulfilled the highest percentage of high-level role expectations?", options: ["Job Portal", "Campus hiring", "Employee Referrals", "Consultants"], answer: ["Employee Referrals"] },
+            { question: "In selection analytics, what does a structured panel interview evaluate?", options: ["Writing ability", "Cognitive style", "Communication under pressure", "Job fit through consistent questions"], answer: ["Job fit through consistent questions"] },
+            { question: "What is a potential consequence of a poor cut score?", options: ["Reduced cost per hire", "Perfect performance", "High false positives or false negatives", "Higher salaries offered"], answer: ["High false positives or false negatives"] },
+            { question: "What data point is not typically tracked in the performance impact of candidate fit?", options: ["Satisfaction", "Attendance", "Time to hire", "Retention"], answer: ["Time to hire"] },
+            { question: "Which of the following is not a technology assessment parameter?", options: ["Cheating", "Cost of hire", "Promotion likelihood", "Applicant reaction"], answer: ["Promotion likelihood"] },
+            { question: "In the dashboard data, what state-level detail was visualised?", options: ["Gender-wise count", "Productivity level", "Interview duration", "Salary expectations"], answer: ["Gender-wise count"] },
+            { question: "What distinguishes verifiable from non-verifiable biodata?", options: ["Whether the data is qualitative or quantitative", "Whether it can be independently confirmed", "Whether it’s legally permissible to ask", "Whether it predicts retention"], answer: ["Whether it can be independently confirmed"] },
+            { question: "Which of the following is most directly linked with recruitment budget tracking?", options: ["Absenteeism rate", "Proposed vs actual spend", "Referral source", "Performance review"], answer: ["Proposed vs actual spend"] },
+            { question: "In selection analytics, the term “Fit Percentage” refers to the ________.", options: ["Salary satisfaction", "Resume match rate", "Degree of alignment across job, team, supervisor, and organisations", "Ratio of candidates to recruiters"], answer: ["Degree of alignment across job, team, supervisor, and organisations"] },
+            { question: "State True or False: The ideal trait of an effective testing component in selection is that it is predictive of job performance.", options: ["True", "False"], answer: ["True"] },
+            { question: "Which factor helps determine who should receive training first?", options: ["Education level", "Motivation to learn", "Salary level", "Age"], answer: ["Motivation to learn"] },
+            { question: "What does skill inventory analysis compare?", options: ["Budget vs. outcomes", "Age vs. performance", "Available vs. required skills", "Training vs. education"], answer: ["Available vs. required skills"] },
+            { question: "Which phase focuses on measuring training outcomes?", options: ["Assessment", "Implementation", "Evaluation", "Alignment"], answer: ["Evaluation"] },
+            { question: "What indicates training coverage within the organisations?", options: ["Training budget", "Employee trained / Total number of employees", "Department size", "HR ratio"], answer: ["Employee trained / Total number of employees"] },
+            { question: "What is the goal of training in contrast to development?", options: ["Career enhancement", "Current job preparation", "Employee motivation", "Strategic planning"], answer: ["Current job preparation"] },
+            { question: "Which metric reflects technology use in training delivery?", options: ["Outsourcing ratio", "E-learning ratio", "Instructor cost", "Supervisor hours"], answer: ["E-learning ratio"] },
+            { question: "What is the correct formula for absenteeism in training?", options: ["Total training time / Absent employees", "Employees present / Total employees", "Number of employees absent / Total training participants", "Employees trained / Absent employees"], answer: ["Number of employees absent / Total training participants"] },
+            { question: "Which attribute affects employee readiness for training?", options: ["Age", "Attitude", "Salary", "Shift schedule"], answer: ["Attitude"] },
+            { question: "State True or False: In inventory analysis, teamwork skill level is assessed through performance ratings.", options: ["True", "False"], answer: ["True"] },
+            { question: "In task analysis, the importance dimension considers the ________.", options: ["Age", "Training length", "Criticality of the task", "Training method"], answer: ["Criticality of the task"] },
+            { question: "Coaching is most effective when:", options: ["Supervisors are uninvolved", "There is an open relationship", "Trainees are left alone", "Feedback is avoided"], answer: ["There is an open relationship"] },
+            { question: "Understudy training involves:", options: ["Lecturing to senior executives", "Replacing peers without guidance", "Acting as a temporary substitute for a manager", "Random job hopping"], answer: ["Acting as a temporary substitute for a manager"] },
+            { question: "Which method provides exposure to diverse functions via advisory groups?", options: ["Understudy", "Job rotation", "Multiple management", "Case study"], answer: ["Multiple management"] },
+            { question: "An executive gains cross-functional experience through:", options: ["Job rotation", "Role play", "Coaching", "Special readings"], answer: ["Job rotation"] },
+            { question: "According to the research findings, traditional practices are shifting toward:", options: ["Eliminating training", "Fixed-role models", "Participation-based development", "Manager-exclusive development"], answer: ["Participation-based development"] },
+            { question: "A suggested HR role in the future is to:", options: ["Control salaries only", "Isolate departments", "Preserve and increase organisational knowledge", "Promote top-down learning only"], answer: ["Preserve and increase organisational knowledge"] },
+            { question: "What is an important learning metric from training?", options: ["Number of holidays taken", "Attitude change", "New dress code adoption", "Marketing strategy redesign"], answer: ["Attitude change"] },
+            { question: "An employee’s reaction to training may include:", options: ["Ignoring training content", "Dismissing instructors", "Satisfaction with course delivery", "Refusing to participate in appraisals"], answer: ["Satisfaction with course delivery"] },
+            { question: "Training evaluation criteria do NOT include:", options: ["Sales promotions", "Learning", "Employee reactions", "Business results"], answer: ["Sales promotions"] },
+            { question: "State True or False: Behaviours and skill outcomes are assessed by measuring decisiveness in actions.", options: ["True", "False"], answer: ["True"] },
+            { question: "What does the Training Visualisation show regarding job roles?", options: ["Age distribution", "Skill Gap Analysis Score", "Monthly expenses", "Housing allocation"], answer: ["Skill Gap Analysis Score"] },
+            { question: "What does the average post-training score relate to?", options: ["Absenteeism", "Department rank", "Performance by Job Role", "Bonus disbursement"], answer: ["Performance by Job Role"] },
+            { question: "What is visualised in the training effectiveness chart?", options: ["Weather patterns", "Departmental shifts", "Subject-wise performance", "Meal preferences"], answer: ["Subject-wise performance"] },
+            { question: "What financial metric is tracked department-wise in training data?", options: ["Training Cost", "Bonus expenditure", "Rent allocation", "Reimbursement rate"], answer: ["Training Cost"] },
+            { question: "What character trait is listed in the benchmark skills table?", options: ["Punctuality", "Compassion and sensitivity", "Typing speed", "Accent clarity"], answer: ["Compassion and sensitivity"] },
+            { question: "Which is a component of the development summary based on self and others’ input?", options: ["Leave balance", "Listens to others", "Health insurance", "Seating layout"], answer: ["Listens to others"] },
+            { question: "What is included in interpersonal relationship development?", options: ["Conflict creation", "Attendance reporting", "Facilitates team success", "Wage compliance"], answer: ["Facilitates team success"] },
+            { question: "Which activity is part of internal development programs?", options: ["External consulting", "Job rotation", "Legal compliance", "Budget proposal writing"], answer: ["Job rotation"] },
+            { question: "What method in the job experiences matrix involves decision-making under stress?", options: ["Group exercise", "Annual party planning", "Adverse business conditions", "Time logging"], answer: ["Adverse business conditions"] },
+            { question: "What does \"Making Transitions\" in the job experience matrix signify?", options: ["Time zone shift", "Unfamiliar responsibilities", "Changing passwords", "Location mapping"], answer: ["Unfamiliar responsibilities"] },
+            { question: "One benefit of performance appraisal from a developmental perspective is:", options: ["Salary calculation", "Strategic alignment", "Feedback and personal growth", "Documentation for legal defence"], answer: ["Feedback and personal growth"] },
+            { question: "In Cadbury's potential appraisal, which of the following is not one of the six rated competencies?", options: ["Goal Setting", "Innovation", "Team Size", "Leadership"], answer: ["Team Size"] },
+            { question: "Which goal-setting metric assesses average goals not achieved?", options: ["Goal clarity index", "Performance review", "Skills audit", "Performance analytics"], answer: ["Performance analytics"] },
+            { question: "The purpose of the MBO process is:", options: ["Top-down supervision", "Linear rating", "Joint goal setting and review", "Peer assessments"], answer: ["Joint goal setting and review"] },
+            { question: "What is the primary reason for inflating ratings?", options: ["Legal compliance", "Improve performance metrics", "Make the manager look good", "Increase attrition"], answer: ["Make the manager look good"] },
+            { question: "What does the talent utilisation percentage reflect?", options: ["Skills used relative to those possessed", "Number of trained staff", "Time on leave", "Bonus distribution"], answer: ["Skills used relative to those possessed"] },
+            { question: "Which tool is used to measure goal alignment and skill fit?", options: ["Gantt chart", "Goal clarity index", "Forced ranking", "Skill-goal mismatch"], answer: ["Skill-goal mismatch"] },
+            { question: "What does the Graphic Rating Scale assess?", options: ["Project durations", "Linear performance over time", "Traits like attitude and decisiveness", "Average output per employee"], answer: ["Traits like attitude and decisiveness"] },
+            { question: "Which appraisal approach is most structured around business strategy and developmental gaps?", options: ["360-degree appraisal", "Competency matrix", "Field review", "MBO"], answer: ["Competency matrix"] },
+            { question: "State True or False: The relationship between employee engagement and leadership is measured by respect and frequency of leader interaction.", options: ["True", "False"], answer: ["True"] },
+            { question: "What is a key feature of a good compensation system design?", options: ["One-size-fits-all policy", "Fixed pay only", "Customisation to strategic objectives", "Pay secrecy"], answer: ["Customisation to strategic objectives"] },
+            { question: "Which of the following is not a component of base compensation?", options: ["Salary", "Stock options", "Wages", "Hourly pay"], answer: ["Stock options"] },
+            { question: "What indicates poor alignment of compensation with performance in firms with high debt?", options: ["High pay-performance sensitivity", "Stock buybacks", "Risk-shifting behaviour", "Minimal bonuses"], answer: ["Risk-shifting behaviour"] },
+            { question: "What principle underlies the statement: “No work but full pay”?", options: ["Misaligned incentive systems", "Compensation parity", "Legal compliance", "Transparent HR policy"], answer: ["Misaligned incentive systems"] },
+            { question: "What is the role of job evaluation in wage administration?", options: ["Determines employee benefits", "Decides the appeal handling process", "Establishes equitable pay", "Tracks salary slips"], answer: ["Establishes equitable pay"] },
+            { question: "What is a lead indicator in internal learning and growth?", options: ["Revenue growth", "Develop strategic competencies", "Employee turnover", "Customer retention"], answer: ["Develop strategic competencies"] },
+            { question: "What is a key external contingent factor affecting compensation plans?", options: ["Skills matrix", "Leadership style", "Nature of HR market", "Internal competition"], answer: ["Nature of HR market"] },
+            { question: "Which compensation philosophy objective ensures consistency with laws?", options: ["Compliance with legal rules", "Employee empowerment", "Low fixed cost", "Transparency in meetings"], answer: ["Compliance with legal rules"] },
+            { question: "State True or False: In compensation, incentive payments do NOT fall under “wages.”", options: ["True", "False"], answer: ["True"] },
+            { question: "The aim of a compensation philosophy is to ________.", options: ["Minimise legal challenges", "Establish equity and reward strategies", "Standardise hiring procedures", "Eliminate benefits variance"], answer: ["Establish equity and reward strategies"] },
+            { question: "What is the purpose of job evaluation in HR analytics?", options: ["To determine training needs", "To assess employee satisfaction", "To determine job worth", "To track leave records"], answer: ["To determine job worth"] },
+            { question: "Which metric calculates the average cost of maintaining an employee in a department?", options: ["Hike Percentage", "Cost per Employee", "Compensation Ratio", "Job Fit Index"], answer: ["Cost per Employee"] },
+            { question: "What does the term 'pay mix' refer to in compensation?", options: ["Profit-sharing only", "Salary of CEOs", "Combination of base pay, incentives, and benefits", "Payroll accounting"], answer: ["Combination of base pay, incentives, and benefits"] },
+            { question: "Short-term incentives are usually linked to:", options: ["Years of experience", "Daily performance targets", "Government policies", "Employee grievances"], answer: ["Daily performance targets"] },
+            { question: "An example of a non-monetary reward is:", options: ["Bonus", "Vacation day", "Salary hike", "Health allowance"], answer: ["Vacation day"] },
+            { question: "Compensation structure misalignment can be identified through:", options: ["Attendance sheet", "Payroll ledger", "Job worth vs. salary comparison", "Leave policy"], answer: ["Job worth vs. salary comparison"] },
+            { question: "What does CPI stand for?", options: ["Central Performance Index", "Compensation Planning Index", "Consumer Price Index", "Comparative Pay Indicator"], answer: ["Consumer Price Index"] },
+            { question: "Skill gap analysis is used to identify:", options: ["Work hours", "Number of trainings", "Gap between desired and existing skills", "Performance rankings"], answer: ["Gap between desired and existing skills"] },
+            { question: "State True or False: In a nine-box matrix, high potential and high performance indicate high performers.", options: ["True", "False"], answer: ["True"] },
+            { question: "A ________ market strategy involves paying more than the industry average to attract top talent.", options: ["Lag", "Match", "Par", "Lead"], answer: ["Lead"] },
+            { question: "What is the first step in the Data Science Framework before using Tableau?", options: ["Define variables", "Visualize data", "Define the problem", "Create graphs"], answer: ["Define the problem"] },
+            { question: "Which format is typically used for uploading datasets into Tableau?", options: [".mp3", ".xlsx", ".exe", ".zip"], answer: [".xlsx"] },
+            { question: "In HR analytics, which metric is most relevant to measuring hiring success?", options: ["Bounce rate", "Attrition rate", "Hiring ratio", "Conversion rate"], answer: ["Hiring ratio"] },
+            { question: "Which of the following is not a data visualization tool?", options: ["Tableau", "Power BI", "Excel", "Microsoft Word"], answer: ["Microsoft Word"] },
+            { question: "Which statement is TRUE about bar charts?", options: ["They are used for continuous data only", "They show frequency of categories", "They require three variables", "They always use time as X-axis"], answer: ["They show frequency of categories"] },
+            { question: "The full form of KPI is:", options: ["Key Process Integration", "Knowledge Performance Index", "Key Performance Indicator", "Known Point Insight"], answer: ["Key Performance Indicator"] },
+            { question: "If more applicants from “Newspaper” demand high salaries, you might:", options: ["Remove that data", "Invest more in Newspaper hiring", "Evaluate ROI of that channel", "Ignore it"], answer: ["Evaluate ROI of that channel"] },
+            { question: "Bar charts and pie charts are the only visual options available in Tableau.", options: ["True", "False"], answer: ["False"] },
+            { question: "Tableau automatically assigns colors to highlight high and low values using default palettes.", options: ["True", "False"], answer: ["True"] },
+            { question: "The ______ feature allows combining multiple visualizations into a single view.", options: ["Storyline", "Dashboard", "Page Shelf", "Data Source"], answer: ["Dashboard"] },
+
+            // --- ADVANCED LEVELS (13-24) ---
+            { question: "What is a primary goal of using predictive analytics in recruitment?", options: ["Automating interview scheduling", "To forecast future hiring needs and identify high-potential candidates", "Replacing human recruiters", "Standardizing job descriptions"], answer: ["To forecast future hiring needs and identify high-potential candidates"] },
+            { question: "Which model predicts which candidates are most likely to accept a job offer?", options: ["Performance Model", "Turnover Model", "Offer Acceptance Model", "Sourcing Model"], answer: ["Offer Acceptance Model"] },
+            { question: "'Quality of Hire' is often predicted using data from...", options: ["Social media profiles", "Pre-hire assessments and post-hire performance reviews", "The number of applications received", "The hiring manager's tenure"], answer: ["Pre-hire assessments and post-hire performance reviews"] },
+            { question: "What is a common challenge in building predictive hiring models?", options: ["Lack of available software", "Ensuring fairness and avoiding algorithmic bias", "Too much data from candidates", "Models being too accurate"], answer: ["Ensuring fairness and avoiding algorithmic bias"] },
+            { question: "Which data type is 'resume text' considered in a predictive model?", options: ["Structured numerical data", "Categorical data", "Time-series data", "Unstructured text data"], answer: ["Unstructured text data"] },
+            { question: "A/B testing in recruitment analytics could be used to evaluate...", options: ["The performance of two different recruiters", "The effectiveness of different job ad versions", "The salary competitiveness for a role", "The layout of the careers page"], answer: ["The effectiveness of different job ad versions"] },
+            { question: "What does a 'flight risk' model predict?", options: ["The likelihood of an employee being promoted", "The chance of a project failing", "The likelihood of an employee voluntarily leaving the company", "The probability of a candidate rejecting an offer"], answer: ["The likelihood of an employee voluntarily leaving the company"] },
+            { question: "Which statistical technique is commonly used for building predictive retention models?", options: ["Linear Regression", "Cluster Analysis", "Logistic Regression", "Mean Average"], answer: ["Logistic Regression"] },
+            { question: "'Time to proficiency' is a metric used to assess...", options: ["The speed of the recruitment process", "The effectiveness of the onboarding process", "How long a new hire stays with the company", "The efficiency of the payroll system"], answer: ["The effectiveness of the onboarding process"] },
+            { question: "True or False: Predictive models in HR are static and do not need to be retrained.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is sentiment analysis used for in HR?", options: ["To calculate payroll deductions", "To gauge employee mood from text data like surveys or reviews", "To track employee attendance", "To schedule company events"], answer: ["To gauge employee mood from text data like surveys or reviews"] },
+            { question: "eNPS stands for...", options: ["External Net Promoter Score", "Employee Net Performance Score", "Employee Net Promoter Score", "Essential Net Payroll System"], answer: ["Employee Net Promoter Score"] },
+            { question: "Which of these is a key driver of employee engagement?", options: ["Office location", "Company's stock price", "Career development opportunities", "Length of the workday"], answer: ["Career development opportunities"] },
+            { question: "Natural Language Processing (NLP) is a technology essential for...", options: ["Running payroll calculations", "Analyzing open-ended survey feedback", "Creating organizational charts", "Managing employee benefits"], answer: ["Analyzing open-ended survey feedback"] },
+            { question: "A 'pulse survey' is typically...", options: ["A comprehensive annual survey", "Short, frequent, and focused on specific topics", "A survey only for new hires", "A test of an employee's physical health"], answer: ["Short, frequent, and focused on specific topics"] },
+            { question: "What does a high eNPS score generally indicate?", options: ["High employee turnover", "High employee loyalty and advocacy", "High levels of workplace stress", "A need for more management oversight"], answer: ["High employee loyalty and advocacy"] },
+            { question: "Analyzing communication patterns (e.g., email metadata) to understand team dynamics is part of...", options: ["Performance Review Analysis", "Organizational Network Analysis (ONA)", "Compensation Structure Analysis", "Recruitment Funnel Analysis"], answer: ["Organizational Network Analysis (ONA)"] },
+            { question: "Which metric is NOT a direct measure of engagement?", options: ["eNPS score", "Voluntary turnover rate", "Employee headcount", "Absenteeism rate"], answer: ["Employee headcount"] },
+            { question: "An 'engagement dashboard' would typically visualize...", options: ["Individual employee salaries", "Company revenue figures", "Survey scores over time by department", "IT support ticket volumes"], answer: ["Survey scores over time by department"] },
+            { question: "True or False: Sentiment analysis can perfectly understand sarcasm and context in employee feedback.", options: ["True", "False"], answer: ["False"] },
+            { question: "The '9-box grid' is a tool used for...", options: ["Scheduling weekly meetings", "Talent mapping based on performance and potential", "Calculating employee bonuses", "Tracking office supply inventory"], answer: ["Talent mapping based on performance and potential"] },
+            { question: "What is a key issue with traditional annual performance reviews, from an analytics perspective?", options: ["They provide too much data", "They are too easy for managers to complete", "They provide infrequent and often biased data", "They are liked by all employees"], answer: ["They provide infrequent and often biased data"] },
+            { question: "'Forced ranking' or stack ranking systems can sometimes lead to...", options: ["Improved company-wide collaboration", "Unhealthy internal competition and reduced collaboration", "Higher employee morale", "Automatic salary increases for everyone"], answer: ["Unhealthy internal competition and reduced collaboration"] },
+            { question: "Analyzing the correlation between manager effectiveness scores and team performance is an example of...", options: ["Recruitment analytics", "Linking HR initiatives to business outcomes", "Compensation analysis", "Onboarding analysis"], answer: ["Linking HR initiatives to business outcomes"] },
+            { question: "What does 'performance calibration' aim to achieve?", options: ["To set future salary bands", "Consistency and fairness in performance ratings across managers", "To rank departments by revenue", "To decide on the annual bonus pool"], answer: ["Consistency and fairness in performance ratings across managers"] },
+            { question: "A key metric in performance analytics is 'Performance vs. Potential'. Which tool visualizes this?", options: ["Gantt Chart", "Pie Chart", "9-Box Grid", "Flowchart"], answer: ["9-Box Grid"] },
+            { question: "What is a primary benefit of continuous performance feedback?", options: ["It reduces the need for managers", "It provides real-time data for course correction and development", "It makes payroll processing easier", "It is only useful for underperforming employees"], answer: ["It provides real-time data for course correction and development"] },
+            { question: "Which of these is a lagging indicator of performance?", options: ["Weekly training hours completed", "Number of new skills acquired", "Annual sales target achievement", "Daily customer satisfaction scores"], answer: ["Annual sales target achievement"] },
+            { question: "Objective Key Results (OKRs) are designed to...", options: ["Track daily attendance", "Replace the need for performance reviews", "Align individual and team goals with company objectives", "Manage employee expense reports"], answer: ["Align individual and team goals with company objectives"] },
+            { question: "True or False: High performance always equates to high potential.", options: ["True", "False"], answer: ["False"] },
+            { question: "What does 'Compa-Ratio' measure?", options: ["The company's total compensation cost", "An employee's pay relative to the midpoint of a salary range", "The ratio of benefits to salary", "The comparison of salaries between two departments"], answer: ["An employee's pay relative to the midpoint of a salary range"] },
+            { question: "A Compa-Ratio of less than 1.0 (or 100%) suggests...", options: ["The employee is paid above the market average", "The employee is paid below the salary range midpoint", "The salary range is outdated", "The employee is a top performer"], answer: ["The employee is paid below the salary range midpoint"] },
+            { question: "Pay equity analysis is used to identify...", options: ["Which employees are eligible for a bonus", "If the company is paying competitive salaries", "Unexplained pay gaps between demographic groups", "The most expensive employee benefits"], answer: ["Unexplained pay gaps between demographic groups"] },
+            { question: "Which is an example of a long-term incentive (LTI)?", options: ["Annual bonus", "Stock options", "Sales commission", "Overtime pay"], answer: ["Stock options"] },
+            { question: "Analyzing benefits utilization data can help an organization...", options: ["Increase employee salaries", "Choose which holidays to observe", "Optimize benefits offerings and control costs", "Monitor employee web browsing habits"], answer: ["Optimize benefits offerings and control costs"] },
+            { question: "What is a key risk of a poorly designed sales incentive plan?", options: ["Sales teams will be too happy", "It may drive undesirable behaviors, like excessive discounting", "The company will receive too many job applicants", "It will be too simple to calculate"], answer: ["It may drive undesirable behaviors, like excessive discounting"] },
+            { question: "The 'total rewards' concept includes...", options: ["Only base salary", "Only non-monetary perks", "Compensation, benefits, and career development opportunities", "Only health insurance and retirement plans"], answer: ["Compensation, benefits, and career development opportunities"] },
+            { question: "What is a major input for determining salary ranges?", options: ["Employee age", "External market data and internal job evaluation", "The company's founding date", "The number of employees in the company"], answer: ["External market data and internal job evaluation"] },
+            { question: "Regression analysis in compensation can be used to...", options: ["Predict next year's stock price", "Model the relationship between pay and factors like experience and performance", "Calculate the exact amount of an employee's bonus", "Choose a new payroll provider"], answer: ["Model the relationship between pay and factors like experience and performance"] },
+            { question: "True or False: A 'Lead-the-Market' pay strategy means paying exactly at the market average.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is the primary purpose of workforce planning?", options: ["To ensure the right number of people with the right skills are in the right roles at the right time", "To process monthly payroll", "To organize the company's annual party", "To track employee vacation days"], answer: ["To ensure the right number of people with the right skills are in the right roles at the right time"] },
+            { question: "A 'Markov analysis' is a statistical technique used in HR for...", options: ["Analyzing employee survey comments", "Forecasting internal employee movement and turnover", "Calculating benefits costs", "Setting performance goals"], answer: ["Forecasting internal employee movement and turnover"] },
+            { question: "What is a 'skills inventory'?", options: ["A list of office supplies", "A database of employees' skills, knowledge, and abilities", "The company's annual training budget", "A chart of the company's reporting structure"], answer: ["A database of employees' skills, knowledge, and abilities"] },
+            { question: "Which of the following is a quantitative forecasting method?", options: ["Delphi technique", "Managerial estimates", "Trend analysis", "Nominal group technique"], answer: ["Trend analysis"] },
+            { question: "Succession planning is a component of workforce planning that focuses on...", options: ["Hiring entry-level employees", "Identifying and developing future leaders", "Managing employee disciplinary issues", "Calculating retirement benefits"], answer: ["Identifying and developing future leaders"] },
+            { question: "'Bench strength' refers to...", options: ["The physical fitness of the workforce", "The number of employees in the HR department", "The availability of ready candidates to fill critical roles", "The size of the company's headquarters"], answer: ["The availability of ready candidates to fill critical roles"] },
+            { question: "A 'replacement chart' in succession planning typically shows...", options: ["The company's floor plan", "Potential replacements for key positions and their readiness", "The schedule for replacing office equipment", "A list of recently terminated employees"], answer: ["Potential replacements for key positions and their readiness"] },
+            { question: "What is 'gap analysis' in the context of workforce planning?", options: ["Comparing the current workforce to the future required workforce", "Analyzing the pay gap between executives and employees", "Measuring the distance between office locations", "Reviewing gaps in an employee's resume"], answer: ["Comparing the current workforce to the future required workforce"] },
+            { question: "Which factor would likely trigger a need for workforce resizing?", options: ["A new marketing campaign", "A major technological disruption or automation", "A change in the company dress code", "The launch of a new employee wellness program"], answer: ["A major technological disruption or automation"] },
+            { question: "True or False: Workforce planning is solely an HR responsibility and requires no input from business leaders.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is the difference between attrition and turnover?", options: ["There is no difference", "Attrition is when a role is not refilled, while turnover implies refilling the role", "Turnover is always voluntary, attrition is always involuntary", "Attrition only applies to senior executives"], answer: ["Attrition is when a role is not refilled, while turnover implies refilling the role"] },
+            { question: "Analyzing turnover rates by manager can help identify...", options: ["Which departments have the best parking spots", "Potential issues with leadership or team culture", "The most popular company benefits", "The company's most profitable products"], answer: ["Potential issues with leadership or team culture"] },
+            { question: "A 'survival analysis' in HR is used to...", options: ["Determine the company's financial health", "Analyze the tenure of employees and predict when they might leave", "Assess workplace safety standards", "Plan for disaster recovery"], answer: ["Analyze the tenure of employees and predict when they might leave"] },
+            { question: "What is 'regrettable turnover'?", options: ["The departure of any employee from the company", "The departure of a low-performing employee", "The departure of a high-performing or high-potential employee", "Turnover that occurs in the last quarter of the year"], answer: ["The departure of a high-performing or high-potential employee"] },
+            { question: "'Stay interviews' are conducted to...", options: ["Understand why high-performing employees choose to remain with the company", "Formally discipline an employee", "Conduct an exit interview", "Offer a promotion to an employee"], answer: ["Understand why high-performing employees choose to remain with the company"] },
+            { question: "Which of the following is a leading indicator of potential turnover?", options: ["An employee's last promotion date", "Decreased employee engagement scores", "High company profits", "The number of years the company has been in business"], answer: ["Decreased employee engagement scores"] },
+            { question: "The 'Cost of Turnover' typically includes...", options: ["Only the final salary payment to the departing employee", "The cost of a farewell party", "Recruitment, onboarding, and lost productivity costs", "The price of new office furniture"], answer: ["Recruitment, onboarding, and lost productivity costs"] },
+            { question: "To calculate the annual turnover rate, you divide the number of separations by the...", options: ["Total number of employees at the end of the year", "Number of new hires during the year", "Average number of employees during the year", "Total company revenue"], answer: ["Average number of employees during the year"] },
+            { question: "Which data source is most valuable for understanding the specific reasons for voluntary turnover?", options: ["Employee performance reviews", "Exit interview data", "Company financial statements", "Attendance records"], answer: ["Exit interview data"] },
+            { question: "True or False: A 0% turnover rate is the optimal goal for every company.", options: ["True", "False"], answer: ["False"] },
+            { question: "Which metric measures the representation of different demographic groups at various levels of the organization?", options: ["Turnover Rate", "Diversity Mix", "Time to Hire", "Absence Rate"], answer: ["Diversity Mix"] },
+            { question: "Pay equity analysis is a critical component of which part of DEI?", options: ["Diversity", "Equity", "Inclusion", "All of the above"], answer: ["Equity"] },
+            { question: "An 'inclusion survey' would likely measure...", options: ["Employee satisfaction with their salary", "Employees' sense of belonging and psychological safety", "How many languages employees speak", "The number of company-sponsored social events"], answer: ["Employees' sense of belonging and psychological safety"] },
+            { question: "Analyzing promotion rates across different demographic groups can help identify...", options: ["The most popular training courses", "Potential bias in the promotion process", "The company's most profitable department", "The average age of the workforce"], answer: ["Potential bias in the promotion process"] },
+            { question: "What is 'adverse impact' in the context of hiring analytics?", options: ["A negative review from a candidate on Glassdoor", "When a selection process disproportionately screens out people from a protected group", "Hiring a candidate who turns out to be a poor performer", "The financial cost of a bad hire"], answer: ["When a selection process disproportionately screens out people from a protected group"] },
+            { question: "The 'Rooney Rule' is a concept related to...", options: ["Ensuring diverse candidate slates for open positions", "Calculating executive bonuses", "Setting annual company budgets", "A specific type of statistical analysis"], answer: ["Ensuring diverse candidate slates for open positions"] },
+            { question: "Which visualization is best for comparing the representation of women across different management levels?", options: ["A pie chart of the entire company's gender split", "A stacked bar chart showing gender by job level", "A line graph of company revenue", "A scatter plot of age vs. salary"], answer: ["A stacked bar chart showing gender by job level"] },
+            { question: "What does the 'G' in ESG stand for, which often intersects with DEI initiatives?", options: ["Growth", "Global", "Governance", "Goals"], answer: ["Governance"] },
+            { question: "Which of these is a qualitative data source for DEI analytics?", options: ["Headcount data by ethnicity", "Promotion rate data by gender", "Focus group discussions on workplace culture", "Salary data by age group"], answer: ["Focus group discussions on workplace culture"] },
+            { question: "True or False: Having a diverse workforce automatically guarantees an inclusive culture.", options: ["True", "False"], answer: ["False"] },
+            { question: "The Kirkpatrick Model is used for what purpose in L&D?", options: ["To design training content", "To evaluate the effectiveness of training programs", "To schedule training sessions", "To calculate the cost of e-learning software"], answer: ["To evaluate the effectiveness of training programs"] },
+            { question: "Which level of the Kirkpatrick Model measures the impact of training on business results?", options: ["Level 1: Reaction", "Level 2: Learning", "Level 3: Behavior", "Level 4: Results"], answer: ["Level 4: Results"] },
+            { question: "'Training ROI' is calculated by comparing the monetary benefits of training to...", options: ["The number of employees who attended", "The hours spent in training", "The cost of the training", "The satisfaction scores from attendees"], answer: ["The cost of the training"] },
+            { question: "What does a 'skills gap analysis' identify?", options: ["The pay gap between different roles", "The difference between skills the workforce has and the skills it needs", "The physical distance between company offices", "The time gap between training sessions"], answer: ["The difference between skills the workforce has and the skills it needs"] },
+            { question: "Analyzing the correlation between participation in a leadership program and subsequent promotion rates is an example of...", options: ["Measuring training reaction", "Assessing learning outcomes", "Evaluating behavior change", "Demonstrating business impact (ROI)"], answer: ["Demonstrating business impact (ROI)"] },
+            { question: "What is a 'Learning Management System' (LMS)?", options: ["The company's main financial accounting software", "A software application for the administration and delivery of educational courses", "A system for managing the company's library", "A tool for creating marketing materials"], answer: ["A software application for the administration and delivery of educational courses"] },
+            { question: "Which metric is a measure of training efficiency?", options: ["Employee satisfaction with the instructor", "Post-training test scores", "Training cost per employee", "Number of promotions after training"], answer: ["Training cost per employee"] },
+            { question: "What is the '70-20-10' model in learning and development?", options: ["A budget allocation formula", "A framework suggesting learning happens from experience, social interaction, and formal training", "A ratio for class size to instructor", "A model for scheduling training sessions"], answer: ["A framework suggesting learning happens from experience, social interaction, and formal training"] },
+            { question: "A 'pre-test/post-test' design in training evaluation is used to measure...", options: ["How much participants enjoyed the training", "The increase in knowledge or skills after the training", "The change in business revenue after training", "The behavior change of participants in the workplace"], answer: ["The increase in knowledge or skills after the training"] },
+            { question: "True or False: High training attendance numbers always mean the training was effective.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is the primary function of an HRIS (Human Resources Information System)?", options: ["To analyze social media trends", "To act as a central repository for employee data", "To manage customer relationships", "To design marketing campaigns"], answer: ["To act as a central repository for employee data"] },
+            { question: "Python and R are examples of what in the context of HR analytics?", options: ["Data visualization dashboards", "Programming languages used for statistical analysis", "HRIS platforms", "Project management tools"], answer: ["Programming languages used for statistical analysis"] },
+            { question: "Which tool is specifically designed for interactive data visualization and creating dashboards?", options: ["MS Excel", "Tableau", "MS Word", "SAP"], answer: ["Tableau"] },
+            { question: "Organizational Network Analysis (ONA) tools are used to...", options: ["Map relationships and communication flows between employees", "Calculate payroll and taxes", "Track employee work hours", "Administer employee benefits"], answer: ["Map relationships and communication flows between employees"] },
+            { question: "What is a major advantage of using a cloud-based HR analytics platform?", options: ["It requires extensive on-site IT support", "It is generally less secure than on-premise systems", "Scalability and accessibility from anywhere", "It never needs to be updated"], answer: ["Scalability and accessibility from anywhere"] },
+            { question: "An 'Applicant Tracking System' (ATS) is primarily used to...", options: ["Monitor current employee performance", "Manage the recruiting and hiring process", "Track company assets", "Process employee expense reports"], answer: ["Manage the recruiting and hiring process"] },
+            { question: "What is SQL (Structured Query Language) used for?", options: ["Creating presentations", "Writing reports and documents", "Querying and managing data in relational databases", "Performing complex financial audits"], answer: ["Querying and managing data in relational databases"] },
+            { question: "What is the key difference between a dashboard and a report?", options: ["A report is always longer than a dashboard", "A dashboard is typically interactive and visual, while a report is often static", "Only executives can use dashboards", "Dashboards cannot be printed"], answer: ["A dashboard is typically interactive and visual, while a report is often static"] },
+            { question: "Which of the following is NOT a typical feature of a modern HR analytics platform?", options: ["Predictive modeling capabilities", "Interactive dashboards", "Data integration from multiple sources", "Video editing software"], answer: ["Video editing software"] },
+            { question: "True or False: Using advanced analytics tools eliminates the need for human interpretation and critical thinking.", options: ["True", "False"], answer: ["False"] },
+            { question: "What does 'Human Capital ROI' measure?", options: ["The cost of the HR department", "The return on investment for the company's total workforce cost", "The average salary of an employee", "The budget for employee training"], answer: ["The return on investment for the company's total workforce cost"] },
+            { question: "'Career Path Ratio' is a metric that assesses...", options: ["The average time an employee spends in a single role", "The ratio of vertical promotions to total employee movements", "The number of open positions in the company", "The cost of external hiring versus internal promotion"], answer: ["The ratio of vertical promotions to total employee movements"] },
+            { question: "What is the 'Innovation Rate' as an HR metric?", options: ["The number of new products launched by the company", "The revenue generated from new products or services as a result of employee ideas", "The budget allocated to the R&D department", "The number of patents filed by the company"], answer: ["The revenue generated from new products or services as a result of employee ideas"] },
+            { question: "The 'Leadership Trust Score' is an example of what kind of metric?", options: ["A financial metric", "A process efficiency metric", "A perception-based or qualitative metric", "A compliance metric"], answer: ["A perception-based or qualitative metric"] },
+            { question: "What does a 'Talent Mobility Index' track?", options: ["How often employees travel for work", "The movement of employees between roles, departments, and geographies within the company", "The number of employees who work remotely", "The average commute time for employees"], answer: ["The movement of employees between roles, departments, and geographies within the company"] },
+            { question: "Which KPI is a measure of workforce productivity?", options: ["Employee headcount", "Revenue per employee", "Office rental cost per employee", "Number of HR staff per employee"], answer: ["Revenue per employee"] },
+            { question: "The 'Offer Acceptance Rate' is a key metric for evaluating the effectiveness of the...", options: ["Onboarding process", "Performance management system", "Recruitment process", "Training programs"], answer: ["Recruitment process"] },
+            { question: "What does the 'Manager-to-Employee Ratio' indicate?", options: ["The effectiveness of managers", "The average number of direct reports a manager has (span of control)", "The ratio of senior leaders to junior employees", "The budget for management training"], answer: ["The average number of direct reports a manager has (span of control)"] },
+            { question: "A high 'Grievance Resolution Rate' suggests...", options: ["The company has too many employee complaints", "The company's products are faulty", "An effective and fair process for handling employee issues", "Employees are unhappy with their pay"], answer: ["An effective and fair process for handling employee issues"] },
+            { question: "True or False: It is better to track a few meaningful KPIs than dozens of vanity metrics.", options: ["True", "False"], answer: ["True"] },
+            { question: "What does GDPR stand for?", options: ["Global Data Protection Regulation", "General Data Privacy Rules", "General Data Protection Regulation", "Global Data Privacy Rules"], answer: ["General Data Protection Regulation"] },
+            { question: "The principle of 'data minimization' in HR analytics means...", options: ["Collecting as much employee data as possible", "Collecting only the data that is necessary for a specific, stated purpose", "Minimizing the font size on reports", "Storing data for the shortest possible time"], answer: ["Collecting only the data that is necessary for a specific, stated purpose"] },
+            { question: "What is a key ethical concern with using AI to screen resumes?", options: ["The AI might be too slow", "The potential for reinforcing existing biases", "It is too expensive for most companies", "Candidates prefer talking to humans"], answer: ["The potential for reinforcing existing biases"] },
+            { question: "Anonymizing employee data before analysis is a technique used to...", options: ["Make the data harder to analyze", "Protect employee privacy", "Increase the size of the dataset", "Check for errors in the data"], answer: ["Protect employee privacy"] },
+            { question: "'Algorithmic fairness' refers to ensuring that...", options: ["Every employee receives the same bonus", "The HR department has the fastest computers", "Predictive models do not have a discriminatory impact on protected groups", "All data reports are formatted identically"], answer: ["Predictive models do not have a discriminatory impact on protected groups"] },
+            { question: "What is a 'Data Privacy Impact Assessment' (DPIA)?", options: ["A review of the company's annual financial performance", "A process to identify and minimize the data protection risks of a project", "An employee survey about data privacy", "A performance review for the Chief Information Officer"], answer: ["A process to identify and minimize the data protection risks of a project"] },
+            { question: "Which of the following is a major risk of analyzing employee social media profiles?", options: ["Gaining valuable insights into candidate fit", "Potential for discrimination based on protected characteristics", "Employees might have too many followers", "The company might get more job applicants"], answer: ["Potential for discrimination based on protected characteristics"] },
+            { question: "The 'right to be forgotten' is a key provision of which regulation?", options: ["Sarbanes-Oxley Act", "HIPAA", "GDPR", "OSHA"], answer: ["GDPR"] },
+            { question: "What is the most critical first step when launching a new HR analytics project involving sensitive data?", options: ["Buying new software", "Ensuring transparency and clear communication with employees", "Hiring more data scientists", "Presenting initial findings to the CEO"], answer: ["Ensuring transparency and clear communication with employees"] },
+            { question: "True or False: If data is collected legally, it is always ethical to use it for any type of analysis.", options: ["True", "False"], answer: ["False"] },
+            { question: "What is the primary goal of 'storytelling with data' in HR?", options: ["To present as much raw data as possible", "To make data engaging and drive action", "To create the longest possible presentation", "To hide negative trends in the data"], answer: ["To make data engaging and drive action"] },
+            { question: "When presenting to executives, your data story should primarily focus on...", options: ["Complex statistical methods", "The link between HR metrics and strategic business outcomes", "A list of every single data point", "The technical details of the data extraction process"], answer: ["The link between HR metrics and strategic business outcomes"] },
+            { question: "Which visualization is best for showing a trend over time?", options: ["Pie Chart", "Line Chart", "Organizational Chart", "Scatter Plot"], answer: ["Line Chart"] },
+            { question: "In data storytelling, 'context' refers to...", options: ["The color palette used in the charts", "Providing the background and setting for the data", "The software used to create the visualization", "The number of slides in the presentation"], answer: ["Providing the background and setting for the data"] },
+            { question: "Using a 'call-to-action' in a data presentation means...", options: ["Ending the meeting abruptly", "Asking the audience if they have any questions", "Clearly stating the recommended next steps based on the data", "Showing a slide with your contact information"], answer: ["Clearly stating the recommended next steps based on the data"] },
+            { question: "To simplify a chart for storytelling, you should...", options: ["Add more data series to be thorough", "Use 3D effects and shadows", "Remove unnecessary clutter like gridlines and borders", "Use a very small font size"], answer: ["Remove unnecessary clutter like gridlines and borders"] },
+            { question: "Which narrative structure is effective for data storytelling?", options: ["Presenting data points in a random order", "Situation -> Complication -> Resolution", "Listing all findings in alphabetical order", "Starting with the least important finding and ending with the most important"], answer: ["Situation -> Complication -> Resolution"] },
+            { question: "The 'data-ink ratio', a concept by Edward Tufte, suggests that you should...", options: ["Use as much ink as possible on non-data elements", "Maximize the proportion of ink used to present actual data", "Ensure all charts are printed in color", "Use a specific brand of ink for printing reports"], answer: ["Maximize the proportion of ink used to present actual data"] },
+            { question: "Your audience for an HR analytics presentation is front-line managers. You should focus your story on...", options: ["High-level financial projections for the next 5 years", "The company's overall stock performance", "Actionable insights that can help them manage their teams better", "The complexities of the predictive model's algorithm"], answer: ["Actionable insights that can help them manage their teams better"] },
+            { question: "True or False: An effective data story should always include every single piece of data you analyzed.", options: ["True", "False"], answer: ["False"] }
+        ];
+
+        const QUESTIONS_PER_LEVEL = 10;
+        
+        // --- Question List Modal Component ---
+        const QuestionsList = ({ allQuestions, onClose }) => (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                    <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white">
+                        <h2 className="text-2xl font-bold text-gray-800">All Questions</h2>
+                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-3xl font-light">&times;</button>
+                    </div>
+                    <div className="p-6 overflow-y-auto">
+                        <div className="space-y-6">
+                            {allQuestions.map((q, index) => {
+                                const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+                                return (
+                                <div key={index} className="border-b pb-4 last:border-b-0">
+                                    <p className="font-semibold text-gray-800">
+                                        <span className="font-bold text-blue-600">Q{index + 1}:</span> {q.question}
+                                    </p>
+                                    <ul className="mt-2 space-y-1 pl-6">
+                                        {q.options.map((opt, i) => {
+                                            const isCorrect = correctAnswers.includes(opt);
+                                            return (
+                                            <li key={i} className={`text-gray-600 ${isCorrect ? 'font-bold text-green-700' : ''}`}>
+                                                - {opt}
+                                                {isCorrect && <span className="text-green-600 ml-2">(Correct)</span>}
+                                            </li>
+                                        )})}
+                                    </ul>
+                                </div>
+                            )})}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- Main App Component ---
+        function App() {
+            const [gameState, setGameState] = React.useState('start'); // 'start', 'levelGate', 'playing', 'levelResult', 'finished'
+            const [currentLevel, setCurrentLevel] = React.useState(0);
+            const [levelScore, setLevelScore] = React.useState(0);
+            const [userAnswers, setUserAnswers] = React.useState(Array(QUESTIONS_PER_LEVEL).fill([]));
+            const [submittedQuestions, setSubmittedQuestions] = React.useState(Array(QUESTIONS_PER_LEVEL).fill(false));
+            const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
+            const [showQuestionsList, setShowQuestionsList] = React.useState(false);
+
+
+            const totalLevels = allQuestions.length / QUESTIONS_PER_LEVEL;
+
+            const levelQuestions = React.useMemo(() => allQuestions.slice(
+                currentLevel * QUESTIONS_PER_LEVEL,
+                (currentLevel + 1) * QUESTIONS_PER_LEVEL
+            ), [currentLevel]);
+
+            const areArraysEqual = (arr1, arr2) => {
+                if (arr1.length !== arr2.length) return false;
+                const sorted1 = [...arr1].sort();
+                const sorted2 = [...arr2].sort();
+                return sorted1.every((value, index) => value === sorted2[index]);
+            };
+
+            const calculateScore = () => {
+                let score = 0;
+                for (let i = 0; i < levelQuestions.length; i++) {
+                    const question = levelQuestions[i];
+                    const userAnswer = userAnswers[i] || [];
+                    const correctAnswer = Array.isArray(question.answer) ? question.answer : [question.answer];
+                    
+                    if (areArraysEqual(userAnswer, correctAnswer)) {
+                        score++;
+                    }
+                }
+                setLevelScore(score);
+                setGameState('levelResult');
+            };
+            
+            const startLevel = () => {
+                setCurrentQuestionIndex(0);
+                setUserAnswers(Array(QUESTIONS_PER_LEVEL).fill([]));
+                setSubmittedQuestions(Array(QUESTIONS_PER_LEVEL).fill(false));
+                setGameState('playing');
+            };
+
+            const handleAnswerSelect = (option, questionIndex) => {
+                const question = levelQuestions[questionIndex];
+                const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
+                const isMultiSelect = correctAnswers.length > 1;
+
+                const newAnswers = [...userAnswers];
+                let currentSelection = newAnswers[questionIndex] || [];
+                
+                if (isMultiSelect) {
+                    if (currentSelection.includes(option)) {
+                        newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
+                    } else {
+                        newAnswers[questionIndex] = [...currentSelection, option];
+                    }
+                } else {
+                    newAnswers[questionIndex] = [option];
+                }
+
+                setUserAnswers(newAnswers);
+            };
+
+            const handleSubmit = (index) => {
+                const newSubmitted = [...submittedQuestions];
+                newSubmitted[index] = true;
+                setSubmittedQuestions(newSubmitted);
+            };
+
+            const handleResetQuestion = (index) => {
+                const newAnswers = [...userAnswers];
+                newAnswers[index] = [];
+                setUserAnswers(newAnswers);
+
+                const newSubmitted = [...submittedQuestions];
+                newSubmitted[index] = false;
+                setSubmittedQuestions(newSubmitted);
+            };
+            
+            const handleNextLevel = () => {
+                if (currentLevel < totalLevels - 1) {
+                    setCurrentLevel(prev => prev + 1);
+                    setGameState('levelGate');
+                } else {
+                    setGameState('finished');
+                }
+            };
+
+            const restartGame = () => {
+                setCurrentLevel(0);
+                setGameState('start');
+            }
+
+            // --- Components for different game states ---
+
+            const StartScreen = () => (
+                <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">HR Analytics Quiz Game</h1>
+                    <p className="text-gray-600 mb-6">Test your knowledge across {totalLevels} levels of HR Analytics!</p>
+                    <button
+                        onClick={() => setGameState('levelGate')}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Start Game
+                    </button>
+                </div>
+            );
+            
+            const LevelGate = () => {
+                const isLastLevel = currentLevel >= totalLevels - 1;
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Level {currentLevel + 1}</h1>
+                        <p className="text-gray-600 mb-6">You need a perfect score to unlock the next level.</p>
+                        <div className="flex flex-col gap-4">
+                            <button
+                                onClick={startLevel}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                            >
+                                Begin Level
+                            </button>
+                            {!isLastLevel && (
+                                <button
+                                    onClick={handleNextLevel}
+                                    className="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 transition"
+                                >
+                                    Skip Level
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            
+            const LevelResult = () => {
+                const isPerfect = levelScore === QUESTIONS_PER_LEVEL;
+                const isLastLevel = currentLevel >= totalLevels - 1;
+
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                            {isPerfect ? 'Level Complete!' : 'Not Quite!'}
+                        </h1>
+                        <p className="text-2xl text-blue-600 font-semibold mb-6">
+                            Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
+                        </p>
+                        {!isPerfect && <p className="text-gray-600 mb-6">You need a perfect score to advance. Let's try again!</p>}
+
+                        <div className="flex flex-col gap-4 mt-6">
+                            {isPerfect ? (
+                                isLastLevel ? (
+                                    <button onClick={() => setGameState('finished')} className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-green-700 shadow-md">
+                                       Finish Game
+                                    </button>
+                                ) : (
+                                     <button onClick={handleNextLevel} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 shadow-md">
+                                       Next Level
+                                    </button>
+                                )
+                            ) : (
+                                 <button onClick={startLevel} className="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-yellow-600 shadow-md">
+                                    Try Again
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const FinishedScreen = () => (
+                 <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 mb-2">Congratulations!</h1>
+                    <p className="text-gray-600 mb-6">You have completed all {totalLevels} levels!</p>
+                    <button
+                        onClick={restartGame}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Play Again
+                    </button>
+                </div>
+            );
+
+            const QuizView = () => {
+                const question = levelQuestions[currentQuestionIndex];
+                const isSubmitted = submittedQuestions[currentQuestionIndex];
+                const selectedAnswers = userAnswers[currentQuestionIndex] || [];
+                const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
+                
+                const isCorrect = isSubmitted && areArraysEqual(selectedAnswers, correctAnswers);
+                const isIncorrect = isSubmitted && !isCorrect;
+                const isMultiSelect = correctAnswers.length > 1;
+
+                const getButtonClass = (option) => {
+                    if (!isSubmitted) {
+                        return selectedAnswers.includes(option) 
+                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-300' 
+                            : 'bg-white hover:bg-gray-100 border-gray-300';
+                    }
+                    const isACorrectAnswer = correctAnswers.includes(option);
+                    const isASelectedAnswer = selectedAnswers.includes(option);
+
+                    if (isACorrectAnswer) return 'bg-green-100 border-green-500 text-green-800 font-semibold';
+                    if (isASelectedAnswer && !isACorrectAnswer) return 'bg-red-100 border-red-500 text-red-800 font-semibold';
+                    
+                    return 'bg-gray-100 border-gray-200 opacity-60';
+                };
+
+                const renderActionButton = () => {
+                    if (isIncorrect) {
+                        return (
+                             <button
+                                onClick={() => handleResetQuestion(currentQuestionIndex)}
+                                className="w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-yellow-600 transition-all text-sm sm:text-base col-span-2"
+                            >
+                                Try Again
+                            </button>
+                        );
+                    }
+                    if (isSubmitted) { // Correct answer
+                        if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
+                             return (
+                                <button
+                                    onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                                    className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-black transition-all text-sm sm:text-base col-span-2"
+                                >
+                                    Next
+                                </button>
+                            );
+                        } else {
+                            return (
+                                <button
+                                    onClick={calculateScore}
+                                    className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all text-sm sm:text-base col-span-2"
+                                >
+                                    Finish Level
+                                </button>
+                            );
+                        }
+                    }
+                    // Not submitted yet
+                    return (
+                         <button
+                            onClick={() => handleSubmit(currentQuestionIndex)}
+                            disabled={selectedAnswers.length === 0}
+                            className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 transition-all text-sm sm:text-base col-span-2"
+                        >
+                            Submit
+                        </button>
+                    );
+                };
+
+                return (
+                    <div>
+                        <div className="mb-6">
+                           <div className="flex justify-between items-center mb-2 text-gray-600 font-medium">
+                                <span>Level {currentLevel + 1}</span>
+                                <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
+                           </div>
+                           <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS_PER_LEVEL) * 100}%` }}></div>
+                           </div>
+                        </div>
+
+                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2 min-h-[6rem] flex items-center">
+                            {question.question}
+                        </h2>
+                        {isMultiSelect && <p className="text-sm text-gray-500 mb-4">(Select all that apply)</p>}
+
+                        <div className="space-y-3">
+                            {question.options.map((option, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleAnswerSelect(option, currentQuestionIndex)}
+                                    disabled={isSubmitted}
+                                    className={`w-full text-left p-4 rounded-lg font-medium transition-all duration-200 border shadow-sm ${getButtonClass(option)}`}
+                                >
+                                    {option}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 grid grid-cols-3 gap-3">
+                            <button
+                                onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                disabled={currentQuestionIndex === 0}
+                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 transition-all text-sm sm:text-base"
+                            >
+                                Previous
+                            </button>
+                            
+                           {renderActionButton()}
+                        </div>
+                    </div>
+                );
+            };
+            
+            const renderGameState = () => {
+                switch (gameState) {
+                    case 'start': return <StartScreen />;
+                    case 'levelGate': return <LevelGate />;
+                    case 'playing': return <QuizView />;
+                    case 'levelResult': return <LevelResult />;
+                    case 'finished': return <FinishedScreen />;
+                    default: return <StartScreen />;
+                }
+            }
+
+            return (
+                <React.Fragment>
+                    <button
+                        onClick={() => setShowQuestionsList(true)}
+                        className="fixed top-4 right-4 bg-white text-blue-600 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105 z-20"
+                    >
+                        List of Questions
+                    </button>
+
+                    {showQuestionsList && <QuestionsList allQuestions={allQuestions} onClose={() => setShowQuestionsList(false)} />}
+                    
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
+                            {renderGameState()}
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
+

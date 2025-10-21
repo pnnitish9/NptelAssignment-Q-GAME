@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Speaking Quiz Game</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </head>
+    <body class="bg-gray-100">
+    <h1><a href="./index.html" style="color: rgb(19, 109, 145); padding: 20px; margin-left: 10px;">Back</a></h1>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Data: 240 Public Speaking Questions ---
+        const allQuestions = [
+            // --- NPTEL ASSIGNMENT LEVELS (1-12) ---
+            // --- Level 1 ---
+            { question: "What are the primary functions of communication? (Select all that apply)", options: ["To inform", "To persuade", "To disregard", "To demotivate"], answer: ["To inform", "To persuade"] },
+            { question: "Which of the following platforms can be used for public speaking? (Select all that apply)", options: ["Instagram", "Youtube", "Amazon", "Flipkart"], answer: ["Instagram", "Youtube"] },
+            { question: 'Who said "The duty of rhetoric is to apply reason to imagination" ?', options: ["Aristotle", "George Bernard Shaw", "Quintilian", "Francis Bacon"], answer: "Francis Bacon" },
+            { question: "Which of these is not a kind of communication barrier?", options: ["Language Barrier", "Psychological Barrier", "Cultural Barrier", "Temporal Barrier"], answer: "Temporal Barrier" },
+            { question: "An effective communication links a well-defined cause with an intended ________.", options: ["system", "cause", "effect", "mode"], answer: "effect" },
+            { question: "The first book on public speaking was written by Aristotle.", options: ["True", "False"], answer: "True" },
+            { question: "Listening is the key to all effective communication.", options: ["True", "False"], answer: "True" },
+            { question: "Who tried to resolve the perpetual debate regarding content versus delivery in oration?", options: ["Quintilian", "Plato", "Cicero", "Aristotle"], answer: "Cicero" },
+            { question: "'The art of public speaking' is written by?", options: ["Emerson", "Stephen Lucas", "Raymond Ross", "Stephen Ahern"], answer: "Stephen Lucas" },
+            { question: "Stealing from multiple sources while writing or speaking is known as?", options: ["Patchwork Plagiarism", "Incremental Plagiarism", "Global Plagiarism", "Citation"], answer: "Patchwork Plagiarism" },
+            
+            // --- Level 2 ---
+            { question: "Who among the following defines speech as “a tool of social adjustment which reflects the efficient personality”?", options: ["Gerald Ford", "Elwood Murray", "Sperber and Wilson", "Dale King"], answer: "Elwood Murray" },
+            { question: "__________ is a public speaking app used for practice.", options: ["Excel", "Orai", "Canva", "Snapseed"], answer: "Orai" },
+            { question: "Who wrote the book The Psychology of Audience?", options: ["A.P. Hare", "W.J.H. Sprott", "David Zarefsky", "H. L. Hollingworth"], answer: "H. L. Hollingworth" },
+            { question: "The __________ lists all the books in a library along with their availability status.", options: ["Periodical database", "Catalogue", "Quotation book", "Encyclopedia"], answer: "Catalogue" },
+            { question: "Which of the following is not a distinct interacting agent of the psychic apparatus according to Sigmund Freud?", options: ["Id", "Ego", "Pleasure principle", "Superego"], answer: "Pleasure principle" },
+            { question: "__________ is a category of public speaker who is a reluctant individual and has the fear of speaking in public.", options: ["Resistor", "Acceptor", "Avoider", "Seeker"], answer: "Resistor" },
+            { question: "__________, as per scholar Eisenson, is a reflection of speaker’s experiences in entirety - innate as well as environmental.", options: ["Message", "Tone", "Argument", "Speech"], answer: "Speech" },
+            { question: "Classroom is often considered as artificial speaking situation.", options: ["True", "False"], answer: "True" },
+            { question: "Eloquence has sustained its significance as a highly prized skill globally as well as perennially.", options: ["True", "False"], answer: "True" },
+            { question: "A webinar is “a live online educational presentation during which participating viewers can submit questions and comments.”", options: ["True", "False"], answer: "True" },
+
+            // --- Level 3 ---
+            { question: "Which of the following is not considered a non-verbal anxiety behaviour?", options: ["Gross bodily movement", "Fidgeting", "Lack of emphasis", "Shuffling feet"], answer: "Lack of emphasis" },
+            { question: "____ is the key for overcoming glossophobia.", options: ["Rigidity", "Practice", "Medication", "Use of Humour"], answer: "Practice" },
+            { question: "Emotional intelligence includes the ability to accurately perceive emotions, to access and generate emotions so as to assist thought, to understand emotions and emotional knowledge, however, it is not responsible for regulating emotions in an individual.", options: ["True", "False"], answer: "False" },
+            { question: "Deardorff’s model of intercultural competence illustrates that acquiring cultural intelligence and awareness is a linear process.", options: ["True", "False"], answer: "False" },
+            { question: "What elements are included in Deardorff’s model of intercultural competence?", options: ["Attitudes and Knowledge", "Internal and External outcomes", "Skills", "All of the above"], answer: "All of the above" },
+            { question: "Which of the following best describes the term ‘Glossophobia’?", options: ["Fear of public speaking", "Fear of large audience", "Fear of stage", "Fear of outdoors"], answer: "Fear of public speaking" },
+            { question: "An emotional state may be considered a function of a state of physiological______", options: ["Cognition", "Function", "Arousal", "Dysregulation"], answer: "Arousal" },
+            { question: "What does positive psychology, as defined by Martin Seligman, focus on? (Select all that apply)", options: ["Character strengths", "Compassion", "Both A and B", "Only A"], answer: ["Character strengths", "Compassion"] },
+            { question: "What acronym does Martin Seligman use to define the components of the “good life”?", options: ["PARMA", "PERMA", "PEMA", "PAMA"], answer: "PERMA" },
+            { question: "Who propounded 'Positive psychology'?", options: ["James Peterson", "Matthew Seligman", "Martin Muller", "Martin Seligman"], answer: "Martin Seligman" },
+
+            // --- Level 4 ---
+            { question: "Citation includes mere quoting when it comes to Public Speaking.", options: ["True", "False"], answer: "False" },
+            { question: "When a public speaker uses ideas of another person but rephrases it in his own words, it is called:", options: ["Paraphrasing", "Plagiarising", "Citing", "Summarizing"], answer: "Paraphrasing" },
+            { question: "Digressions are instances when the speaker moves away from the decided topic.", options: ["True", "False"], answer: "True" },
+            { question: "Priyadarshi Dutta in his book ‘The Microphone Men’ writes that for Indians, speech should be devoid of the following qualities:", options: ["Falsehood", "Rudeness", "Dissension", "All of the above"], answer: "All of the above" },
+            { question: "Oral tradition has been the most archaic mode of human communication.", options: ["True", "False"], answer: "True" },
+            { question: "__________ is the most talked amongst the morality plays.", options: ["The Duchess of Malfi", "Gorboduc", "Everyman", "Twelfth Night"], answer: "Everyman" },
+            { question: "The nature of communication between a teacher and student should be _________.", options: ["Hostile", "Democratic", "Authoritative", "Dismissive"], answer: "Democratic" },
+            { question: "Dramatic monologue was extensively used by the poet:", options: ["William Wordsworth", "Thomas Gray", "Robert Browning", "Ezra Pound"], answer: "Robert Browning" },
+            { question: "Dewey’s child-centered theory shifted the emphasis to the needs of the children and their growth in classroom teaching.", options: ["True", "False"], answer: "True" },
+            { question: "Which of the following are components of classroom teaching?", options: ["Providing a safe space", "Motivation", "Healthy Criticism", "All of the above"], answer: "All of the above" },
+
+            // --- Level 5 ---
+            { question: "When we no longer use communication to communicate but to communicate about communication, what is it called?", options: ["Communication", "Meta-communication", "Paralanguage", "Pragmatics"], answer: "Meta-communication" },
+            { question: "Which of the following are the appropriate determinants of paralanguage? (Select all that apply)", options: ["Biological, Psychological", "Physiological, Occupational, Sociocultural", "Only B", "Both A and B"], answer: ["Biological, Psychological", "Physiological, Occupational, Sociocultural"] },
+            { question: "Pitch vibration is essential for the speaker to avoid being empathetic to the audience.", options: ["True", "False"], answer: "False" },
+            { question: "In metalanguage, language evolves from being a_____ in itself.", options: ["Reason of communication to a means of communication", "Means of communication to the reason of communication", "Both A and B", "None of the above"], answer: "Means of communication to the reason of communication" },
+            { question: "Some communication theorists find the meaning generated by silence direct, while others appreciate the meaning of silence in its ambiguity.", options: ["True", "False"], answer: "True" },
+            { question: "What are the types of conversation according to Adler?", options: ["Personal", "Intellectual", "Practical", "All of the above"], answer: "All of the above" },
+            { question: "What can the speaker do to strengthen the commitment of the listeners to a belief they already possess?", options: ["Lead from educating to commitment", "Develop a contrary claim", "Identify a pattern of anomalies in the belief", "None of the above"], answer: "Lead from educating to commitment" },
+            { question: "High elaboration tendency of the audience signifies standard of arguments and logic of reasoning used for persuasion.", options: ["True", "False"], answer: "True" },
+            { question: "BATNA produces superior outcome than the gain by negotiation. If BATNAs are likely, one shouldn’t go for negotiation.", options: ["True", "False"], answer: "True" },
+            { question: "Among the different categorical varieties of conversation, a conversation describing a sequence of events recounted either in chronological or otherwise order is termed as:", options: ["Exposition", "Narrative", "Argument", "Description"], answer: "Narrative" },
+
+            // --- Level 6 ---
+            { question: "Fill in the blanks: ______ is a spoken expression of ideas and opinions, and ______ is the manner of delivering speech.", options: ["Speech, Elocution", "Elocution, Speech", "Pronunciation, Modulation", "Modulation, Pronunciation"], answer: "Speech, Elocution" },
+            { question: "Which of the following are the most appropriate with respect to Group Discussion? (Select all that apply)", options: ["It is a dialogic learning process", "It fosters a competitive environment", "It facilitates sharing thoughts, opinions, views", "It always proceeds in a structured manner"], answer: ["It is a dialogic learning process", "It facilitates sharing thoughts, opinions, views"] },
+            { question: "_________, an American philosopher proposed the five-step process, known as the Reflective Thinking Method, for directing discussion in problem-solving groups.", options: ["Jean Piaget", "John Dewey", "Charles Sanders Peirce", "None of these"], answer: "John Dewey" },
+            { question: "While defining a concept we should use jargons, and technical language pertaining to that area/discipline.", options: ["True", "False"], answer: "False" },
+            { question: "A speech presented near the beginning of a meeting to guide its thematic agenda and to help set its tone is called ________", options: ["Commemorative speech", "Keynote speech", "Vote of thanks", "None of these"], answer: "Keynote speech" },
+            { question: "To investigate the truth or falsity of an assertion, we _______ it.", options: ["Readily accept", "Dismiss", "Question", "Hold prejudice towards"], answer: "Question" },
+            { question: "Which speech pattern is suitable for a speech which entails discussion on a comparison of two or more branches of the primary topic?", options: ["Casual speech pattern", "Problem- cause- solution speech pattern", "Biographical speech pattern", "Compare/Contrast Speech pattern"], answer: "Compare/Contrast Speech pattern" },
+            { question: "Which of the following are ingredients of speech?", options: ["Topic", "Time", "Language", "All of the above"], answer: "All of the above" },
+            { question: "How would you classify Standup comedy as a speech type?", options: ["Speech about events", "Speech to entertain", "Demonstrative speech", "Speech about concepts"], answer: "Speech to entertain" },
+            { question: "An emergent leader is a group member who commands deference from others owing to his rank, expertise or knowledge.", options: ["True", "False"], answer: "False" },
+            
+            // --- Level 7 ---
+            { question: "________ humour is used to enhance one’s relationships with others.", options: ["Affiliative", "Self- enhancing", "Aggressive", "Self- defeating"], answer: "Affiliative" },
+            { question: "The senses of humour were held to be the four primary fluids. Which of the following were not considered one of the primary fluids?", options: ["Yellow bile", "Black bile", "Phlegm", "Tar"], answer: "Tar" },
+            { question: "The word “interview” originates from the French word “________” meaning “to see each other.”", options: ["Intervue", "Entrevoir", "Intervis", "Intervenor"], answer: "Entrevoir" },
+            { question: "Which of the following is not a purpose-based interview?", options: ["Job interview", "Structured interview", "Clinical interview", "Research interview"], answer: "Structured interview" },
+            { question: "Unlike panel interviews, group interviews include multiple interviewees to be interviewed simultaneously at the same time.", options: ["True", "False"], answer: "True" },
+            { question: "According to Renaissance physiological theory, the human body held a balance of four liquids or humours.", options: ["True", "False"], answer: "True" },
+            { question: "Laddering technique follows the ________ theory, which suggests that people’s attributes determine their consumer choices (choices), reinforcing their values.", options: ["Howard-Sheth Model", "Elaboration Likelihood Model", "Means-End Chain", "Service-Dominant Logic"], answer: "Means-End Chain" },
+            { question: "Which of the following is not a criterion for categorization of interviews?", options: ["Purpose", "Economic class", "Structure", "Medium"], answer: "Economic class" },
+            { question: "Semi-structured interview offers both the objective value of a structured interview approach and the subjective quality of an unstructured.", options: ["True", "False"], answer: "True" },
+            { question: "Who suggests that laddering technique as an interview method in focus group interview “thrives on [questions like] why and how the product matters in an individual life.”", options: ["Prof. Michael Hawley", "Jeffrey G. Allen", "Andrea Fontana", "Walter Bingham"], answer: "Prof. Michael Hawley" },
+
+            // --- Level 8 ---
+            { question: "Match the conferences: a) Press, b) Global, c) Business, d) Author's with their purposes: 1) Global plans, 2) Industry trends, 3) Review works, 4) Public broadcast", options: ["a-1; b-3; c-4; d-2", "a-4; b-1; c-2; d-3", "a-3; b-2; c-1; d-4", "a-3; b-1; c-2; d-4"], answer: "a-4; b-1; c-2; d-3" },
+            { question: "Who suggested Impression management is 'an attempt conscious or unconscious to influence the image during interaction'? (Select all that apply)", options: ["Levashina", "Campion", "Dunsing", "Keiffer"], answer: ["Levashina", "Campion"] },
+            { question: "What are the suitable attributes of Bureaucratic leadership style? (Select all that apply)", options: ["Employees have freedom to take their own course", "Resists change in their hierarchical structure", "Work environment has a clear formal structure", "Employs democratic decision making"], answer: ["Resists change in their hierarchical structure", "Work environment has a clear formal structure"] },
+            { question: "Situational theory propounds that appropriate leadership behaviour is contingent on the situation and on the followers.", options: ["True", "False"], answer: "True" },
+            { question: "What is the final step in the process cycle of meeting management?", options: ["Purpose", "Summation of objectives", "Capabilities", "Feedback"], answer: "Feedback" },
+            { question: "Non-verbal cues like the apparel selection for an interview seldom helps in establishing rapport with the interviewer.", options: ["True", "False"], answer: "True" },
+            { question: "Which of the following is not the attribute of a well-managed meeting?", options: ["Produces effective results", "Entails a sense of accomplishment", "Contains many digressions", "Participants come prepared"], answer: "Contains many digressions" },
+            { question: "Outcome statements should indicate the benefits that participants will derive from the successful realization of the meeting.", options: ["True", "False"], answer: "True" },
+            { question: "What is the power which is based on a high degree of fandom and fondness for the powerholder referred as?", options: ["Coercive power", "Expert power", "Positional power", "Referent power"], answer: "Referent power" },
+            { question: "In which leadership style minimal direction and support is offered by the leader and the subordinates run the show on their own?", options: ["Directing", "Coaching", "Supporting", "Delegating"], answer: "Delegating" },
+
+            // --- Level 9 ---
+            { question: "The use of multimedia aids helps to maintain students’ attention.", options: ["True", "False"], answer: "True" },
+            { question: "__________ aims to study the body language as a type of non-verbal human communication.", options: ["Visual aid", "Chalkboard", "Kinesics", "Notepad"], answer: "Kinesics" },
+            { question: "“It is not space that is the hidden dimension of human communication, but it is time... a major aspect of... nonverbal communication.” Who said this?", options: ["Thomas Bruneau", "Ray Birdwhistell", "Abraham Lincoln", "Soren Kierkegaard"], answer: "Thomas Bruneau" },
+            { question: "__________ are considered to be physical manifestations of one’s emotions.", options: ["Yoga", "Bhakti", "Dharma", "Rasas"], answer: "Rasas" },
+            { question: "Which book by Allan and Barbara Pease illustrates different types of handshakes?", options: ["The Definitive Book of Body Language", "On Writing: A Memoir of the Craft", "The Elements of Style", "The Hidden Dimension"], answer: "The Definitive Book of Body Language" },
+            { question: "Which of the following is not a type of handshake according to Allan and Barbara Pease?", options: ["The Wet Fish", "Octopus grip", "The Bone-Crusher", "The Stiff-Arm Thrust"], answer: "Octopus grip" },
+            { question: "Enhanced perception of spaces leads to increased output in communication.", options: ["True", "False"], answer: "True" },
+            { question: "__________ includes our bodily understanding of time to carry out our diurnals at regular intervals.", options: ["Social Time", "Cultural Time", "Psychological time", "Biological Time"], answer: "Biological Time" },
+            { question: "__________ defines proxemics as “the interrelated observations and theories of man's use of space as a specialized elaboration of culture”.", options: ["Sigmund Freud", "Amy Cuddy", "Edward T. Hall", "Christopher Turk"], answer: "Edward T. Hall" },
+            { question: "Who introduced the term “speech chronemics”?", options: ["H.P. Krüger", "Jones and Yarbrough", "Max Dessoir", "John Keats"], answer: "H.P. Krüger" },
+
+            // --- Level 10 ---
+            { question: "Darryl Plecas, Colette Squires and Len Garis formulated the basics of good leadership in which book?", options: ["The Leadership Challenge", "The Essentials of Leadership in Government", "The 21 Irrefutable Laws of Leadership", "Dare to Lead"], answer: "The Essentials of Leadership in Government" },
+            { question: "Which is not an advantage of using Visual Aids in presentation?", options: ["It grabs attention", "Provides variety and relief", "Helps audience's memory", "There is a fear of distraction"], answer: "There is a fear of distraction" },
+            { question: "Which of the following is not a type of Connectives?", options: ["Grammar", "Signposts", "Transitions", "Internal summaries"], answer: "Grammar" },
+            { question: "Consider the statement: “the desirability of Audio-Visual Aids in Education Sector is immense.”", options: ["True", "False"], answer: "True" },
+            { question: "Consider the statement: “Different types of connectives are interchangeable.”", options: ["True", "False"], answer: "False" },
+            { question: "Consider the statement: 'Used as an audio-visual aid an overhead projector is inferior substitute of a blackboard/whiteboard.'", options: ["True", "False"], answer: "False" },
+            { question: "Which of the following is a basic type of listening?", options: ["Inactive listening", "Reductive listening", "Presumptive listening", "Assertive listening"], answer: "Inactive listening" },
+            { question: "What strategies do you adopt to develop your points during presentation?", options: ["Use of examples", "Use of comparison and contrast", "Use of statistics", "All of the above"], answer: "All of the above" },
+            { question: "Match Maxwell's Laws of Leadership: a) Influence, b) Process, c) Sacrifice, d) Solid Ground, e) Magnetism with meanings: i) Trust, ii) Influence is measure, iii) You attract who you are, iv) Develops daily, v) Give up to go up.", options: ["a-i, b-ii, c-iii, d-iv, e-v", "a-ii, b-iv, c-v, d-i, e-iii", "a-iii, b-iv, c-i, d-ii, e-v", "a-v, b-i, c-ii, d-iv, e-iii"], answer: "a-ii, b-iv, c-v, d-i, e-iii" },
+            { question: "Match connectives to usage: a) Continuation, b) Example, c) Conclude, d) Emphasize, e) Similarity with: i) Hence, ii) Next, iii) To demonstrate, iv) Like, v) Markedly.", options: ["a-i, b-ii, c-iii, d-iv, e-v", "a-v, b-iv, c-iii, d-ii, e-i", "a-ii, b-iii, c-i, d-v, e-iv", "a-iv, b-i, c-v, d-ii, e-iii"], answer: "a-ii, b-iii, c-i, d-v, e-iv" },
+            
+            // --- Level 11 ---
+            { question: "According to the Sapir-Whorf Hypothesis, the language one speaks influences the way one ______.", options: ["Communicates with others", "Learns to write", "Thinks about reality", "Develops grammar"], answer: "Thinks about reality" },
+            { question: "Match Jakobson's Functions of Language: A) Emotive, B) Phatic, C) Metalingual, D) Poetic with: 1) Discusses language, 2) Social connection, 3) Emotion, 4) Aesthetic.", options: ["A-2, B-3, C-4, D-1", "A-1, B-4, C-2, D-3", "A-4, B-1, C-3, D-2", "A-3, B-2, C-1, D-4"], answer: "A-3, B-2, C-1, D-4" },
+            { question: "Which is NOT one of Christopher Turk's seven levers of persuasion?", options: ["Sentiment", "Reputation", "Contrary suggestion", "Convention"], answer: "Reputation" },
+            { question: "Which stage in Graham Wallas’s four-stages of creative thinking is the 'Eureka!' moment?", options: ["Incubation", "Illumination", "Preparation", "Revision"], answer: "Illumination" },
+            { question: "____ seminar involves professionals who can share their experiences.", options: ["Community", "Content Area", "Faculty", "School-Wide"], answer: "Faculty" },
+            { question: "Which of the following are responsibilities of the Chairperson in a seminar? (Select all that apply)", options: ["Introducing the speakers of the session", "Preparing PowerPoint slides", "Moderating the question-answer sessions", "Promote the seminar well in advance"], answer: ["Introducing the speakers of the session", "Moderating the question-answer sessions"] },
+            { question: "Which are considered factors impairing clarity in language use? A. Euphemism, B. Cultural Sensitivity, C. Jargon, D. Doublespeak", options: ["A, B, D", "B, C, D", "A, B, C", "A, C, D"], answer: "A, C, D" },
+            { question: "The need of the use of hedges entails from adherence to the co-operative principle, and is, thus, a pre-requisite of speech etiquettes.", options: ["True", "False"], answer: "True" },
+            { question: "S.I. Hayakawa coined the “ladder of abstraction” to evaluate how humans communicate and think in varying degrees.", options: ["True", "False"], answer: "True" },
+            { question: "According to Mihaly Csikszentmihalyi, which are essential requisites for creative thinking? (Select all that apply)", options: ["Intelligence", "Wealth", "Energy", "Social Status"], answer: ["Intelligence", "Energy"] },
+
+            // --- Level 12 ---
+            { question: "What is a major challenge posed by online interactions?", options: ["E-learning", "Security of personal and other sensitive data", "Reduced need for physical infrastructure", "None of the above"], answer: "Security of personal and other sensitive data" },
+            { question: "In response to a question about the hiring company, the candidate must find common ground with its interests and ideology.", options: ["True", "False"], answer: "True" },
+            { question: "An interviewee should use the STAR approach (situation, task, action, result) to answer a situation-based question.", options: ["True", "False"], answer: "True" },
+            { question: "A speaker should use ornate language and establish himself as superior to his audience.", options: ["True", "False"], answer: "False" },
+            { question: "To make their speech more effective, one should make use of questioning and answering the same question to establish a point.", options: ["True", "False"], answer: "True" },
+            { question: "What do you call the practice where new media technologies impact everyone in society, not just the target audience?", options: ["Virtuality", "Ubiquity", "Interactivity", "None of the above"], answer: "Ubiquity" },
+            { question: "What are important attributes for effective public speaking?", options: ["Choose appropriate subject matter", "Basic knowledge of technology", "Use appropriate words, images and sounds", "All of the above"], answer: "All of the above" },
+            { question: "A panel of interviewers does not consist of", options: ["Candidate", "The Chair", "H R Manager", "Public Relations"], answer: "Candidate" },
+            { question: "What is a time stamp?", options: ["Personalized profile on social media", "Indicates the freshness of the post", "Both A and B", "None of the above"], answer: "Indicates the freshness of the post" },
+            { question: "What do you understand by digital divide?", options: ["Division of content on social media", "Division of online interactions on the basis of sensory stimulation", "Disparity in access to ICTs between individuals at various socioeconomic levels", "Both A and C"], answer: "Disparity in access to ICTs between individuals at various socioeconomic levels" },
+
+            // --- ADVANCED LEVELS (13-24) ---
+            // --- Level 13: Advanced Delivery Techniques ---
+            { question: "The rhetorical device of repeating a word or phrase at the beginning of successive clauses is called:", options: ["Anaphora", "Epistrophe", "Antithesis", "Chiasmus"], answer: "Anaphora" },
+            { question: "A 'pregnant pause' is a technique used primarily to:", options: ["Check notes", "Build suspense and add emphasis", "Allow the audience to ask questions", "Catch one's breath"], answer: "Build suspense and add emphasis" },
+            { question: "Varying your speaking rate, volume, and pitch is known as:", options: ["Articulation", "Pronunciation", "Vocal variety", "Monotone"], answer: "Vocal variety" },
+            { question: "The 'rule of three' in public speaking suggests that:", options: ["A speech should have three main points", "Lists of three are more memorable and satisfying", "You should practice a speech three times", "Speak for only three minutes"], answer: "Lists of three are more memorable and satisfying" },
+            { question: "Which of these is a common logical fallacy?", options: ["Ad Hominem", "Ethos", "Pathos", "Logos"], answer: "Ad Hominem" },
+            { question: "The study of how people use space in communication is known as:", options: ["Chronemics", "Haptics", "Proxemics", "Kinesics"], answer: "Proxemics" },
+            { question: "In Monroe's Motivated Sequence, what step comes after 'Visualization'?", options: ["Need", "Satisfaction", "Action", "Attention"], answer: "Action" },
+            { question: "An impromptu speech is one that is:", options: ["Delivered from a manuscript", "Memorized word-for-word", "Given with little or no preparation", "Read from a teleprompter"], answer: "Given with little or no preparation" },
+            { question: "True or False: Using abstract language is always better than using concrete language.", options: ["True", "False"], answer: "False" },
+            { question: "A 'rhetorical question' is a question asked to:", options: ["Get a direct answer from the audience", "Create a dramatic effect or make a point", "Test the audience's knowledge", "Confuse the audience"], answer: "Create a dramatic effect or make a point" },
+
+            // --- Level 14: Persuasive Speaking Strategies ---
+            { question: "Which of Aristotle's proofs refers to the speaker's credibility or character?", options: ["Pathos", "Logos", "Ethos", "Kairos"], answer: "Ethos" },
+            { question: "Cognitive dissonance is a theory of persuasion that argues people are motivated to:", options: ["Seek out conflicting information", "Reduce internal inconsistency between beliefs and actions", "Listen to speakers they disagree with", "Ignore emotional appeals"], answer: "Reduce internal inconsistency between beliefs and actions" },
+            { question: "A 'red herring' is a fallacy that involves:", options: ["Attacking the person instead of the argument", "Introducing an irrelevant topic to divert attention", "Assuming that a first step will lead to subsequent negative steps", "Presenting only two options when more exist"], answer: "Introducing an irrelevant topic to divert attention" },
+            { question: "A persuasive speech on a question of 'policy' would advocate for:", options: ["A change in laws, rules, or procedures", "The truth or falsity of an assertion", "The morality of an idea or action", "A historical event's significance"], answer: "A change in laws, rules, or procedures" },
+            { question: "Inoculation theory in persuasion works by:", options: ["Overwhelming the audience with facts", "Exposing the audience to a weak version of a counterargument", "Appealing only to emotions", "Avoiding any mention of opposing views"], answer: "Exposing the audience to a weak version of a counterargument" },
+            { question: "Which is NOT a step in Monroe's Motivated Sequence?", options: ["Attention", "Need", "Satisfaction", "Conclusion"], answer: "Conclusion" },
+            { question: "The 'foot-in-the-door' technique involves:", options: ["Making a large request first, then a smaller one", "Making a small request first to gain compliance for a larger one later", "Offering a free gift to persuade", "Using celebrity endorsements"], answer: "Making a small request first to gain compliance for a larger one later" },
+            { question: "Using a vivid, emotional story to persuade an audience primarily appeals to:", options: ["Logos", "Ethos", "Pathos", "Chronos"], answer: "Pathos" },
+            { question: "True or False: A two-sided message, which presents and refutes counterarguments, is often more persuasive to a skeptical audience.", options: ["True", "False"], answer: "True" },
+            { question: "The elaboration likelihood model (ELM) describes two routes to persuasion: central and ________.", options: ["Lateral", "Direct", "Peripheral", "Subliminal"], answer: "Peripheral" },
+
+            // --- Level 15: Handling Difficult Audiences & Q&A ---
+            { question: "When faced with a hostile audience, a speaker's first goal should be to:", options: ["Win the argument at all costs", "Establish common ground", "Ignore the hostility", "End the speech quickly"], answer: "Establish common ground" },
+            { question: "The 'bridging' technique in a Q&A session involves:", options: ["Avoiding the question entirely", "Answering a different question you wish you were asked", "Acknowledging the question and transitioning to a key message", "Asking the questioner to repeat the question"], answer: "Acknowledging the question and transitioning to a key message" },
+            { question: "If a questioner becomes long-winded, a polite way to intervene is:", options: ["To walk away from the podium", "To say, 'So, if I understand you, your question is...'", "To tell them their time is up", "To ask someone else to answer"], answer: "To say, 'So, if I understand you, your question is...'" },
+            { question: "What is the best initial response if you don't know the answer to a question?", options: ["Make up an answer", "Admit you don't know and offer to follow up", "Challenge the questioner's premise", "Ignore the question and move on"], answer: "Admit you don't know and offer to follow up" },
+            { question: "When dealing with a heckler, it is generally best to:", options: ["Engage them in a lengthy debate", "Ignore them completely", "Respond briefly and calmly, then refocus on the audience", "Ask security to remove them immediately"], answer: "Respond briefly and calmly, then refocus on the audience" },
+            { question: "To maintain control of a Q&A session, you should:", options: ["Only take questions from friends", "Repeat each question before answering", "Answer questions as quickly as possible", "Let the audience have unlimited time"], answer: "Repeat each question before answering" },
+            { question: "If an audience member asks multiple questions at once, you should:", options: ["Answer only the easiest one", "Ask them to choose one question", "Try to answer all of them at the same time", "Politely separate the questions and answer them one by one"], answer: "Politely separate the questions and answer them one by one" },
+            { question: "True or False: It's a good idea to plant a question in the audience to get a Q&A session started.", options: ["True", "False"], answer: "True" },
+            { question: "The 'A-C-E' model for answering questions stands for:", options: ["Acknowledge, Clarify, Elaborate", "Answer, Challenge, Exit", "Acknowledge, Community, Example", "Answer, Connect, Expand"], answer: "Answer, Connect, Expand" },
+            { question: "To prevent a Q&A session from running too long, you should:", options: ["Announce at the start how much time you have for questions", "Stop answering once you get tired", "Only answer 'yes' or 'no'", "Walk off the stage"], answer: "Announce at the start how much time you have for questions" },
+            
+            // --- Level 16: Ceremonial & Special Occasion Speeches ---
+            { question: "The main purpose of a eulogy is to:", options: ["Entertain the audience", "Persuade the audience to take action", "Celebrate and commemorate the life of the deceased", "Inform the audience about funeral arrangements"], answer: "Celebrate and commemorate the life of the deceased" },
+            { question: "A speech of presentation is a speech given to:", options: ["Accept an award", "Introduce the main speaker", "Present an award or honor to someone", "Announce one's candidacy"], answer: "Present an award or honor to someone" },
+            { question: "What is the key characteristic of a good toast?", options: ["Length and detail", "Brevity and sincerity", "Humor at the expense of others", "Complex vocabulary"], answer: "Brevity and sincerity" },
+            { question: "A keynote address is typically designed to:", options: ["Provide a detailed financial report", "Set the tone and theme for a conference or event", "Debate a controversial topic", "Introduce a new employee"], answer: "Set the tone and theme for a conference or event" },
+            { question: "In an acceptance speech, it is crucial to:", options: ["Complain about the award's design", "Thank the people who helped you achieve the recognition", "Brag about your superiority over other nominees", "Announce your retirement"], answer: "Thank the people who helped you achieve the recognition" },
+            { question: "A roast is a type of speech that honors an individual through:", options: ["Serious and somber reflection", "Humorous and exaggerated insults", "A detailed biographical account", "A formal presentation of their achievements"], answer: "Humorous and exaggerated insults" },
+            { question: "A commencement speech is given at what type of event?", options: ["A wedding", "A retirement party", "A graduation ceremony", "A business conference"], answer: "A graduation ceremony" },
+            { question: "True or False: A speech of introduction should be longer than the main speaker's presentation.", options: ["True", "False"], answer: "False" },
+            { question: "The primary goal of an after-dinner speech is to:", options: ["Inform", "Persuade", "Entertain", "Critique the meal"], answer: "Entertain" },
+            { question: "When giving a speech to dedicate a memorial, the focus should be on:", options: ["The cost of the memorial", "The person or event being honored", "The construction company that built it", "The speaker's own accomplishments"], answer: "The person or event being honored" },
+
+            // --- Level 17: Advanced Visual Aid Design ---
+            { question: "The 'CRAP' principles of design stand for Contrast, Repetition, Alignment, and ________.", options: ["Popularity", "Proximity", "Purpose", "Photography"], answer: "Proximity" },
+            { question: "According to the rule of thirds, where should the main focal points of a visual be placed?", options: ["In the exact center", "At the intersections of a 3x3 grid", "Along the bottom edge", "In the top-left corner only"], answer: "At the intersections of a 3x3 grid" },
+            { question: "What is the main problem with using a 'pie chart' with too many slices?", options: ["It becomes difficult to read and compare values", "It takes up too much memory", "The colors will clash", "It is considered unprofessional"], answer: "It becomes difficult to read and compare values" },
+            { question: "San-serif fonts (like Arial, Helvetica) are generally considered best for:", options: ["Long blocks of printed text", "On-screen presentations and headlines", "Formal invitations", "Academic papers"], answer: "On-screen presentations and headlines" },
+            { question: "The term 'Death by PowerPoint' refers to presentations that are:", options: ["Visually stunning and engaging", "Too short and concise", "Overloaded with text and poorly designed", "Delivered without any slides"], answer: "Overloaded with text and poorly designed" },
+            { question: "What is a key advantage of using a physical prop as a visual aid?", options: ["It's always free", "It adds a tangible, memorable element", "It requires no practice", "It can be seen from any distance"], answer: "It adds a tangible, memorable element" },
+            { question: "When presenting data, your primary goal should be to:", options: ["Show as much raw data as possible", "Use complex charts to show your intelligence", "Tell a clear story and highlight the key insight", "Fill the entire slide with numbers"], answer: "Tell a clear story and highlight the key insight" },
+            { question: "A 'Z-pattern' layout in design suggests that viewers' eyes will scan a page:", options: ["In a perfect circle", "From top-left to top-right, then diagonally to bottom-left, then to bottom-right", "From bottom to top", "Randomly"], answer: "From top-left to top-right, then diagonally to bottom-left, then to bottom-right" },
+            { question: "True or False: It is a good practice to read your slides word-for-word to the audience.", options: ["True", "False"], answer: "False" },
+            { question: "High-contrast color schemes (e.g., dark text on a light background) are important for:", options: ["Readability", "Artistic expression", "Making slides smaller", "Confusing the audience"], answer: "Readability" },
+
+            // --- Level 18: Storytelling in Business & Leadership ---
+            { question: "The 'Hero's Journey' is a narrative structure that involves a hero who:", options: ["Starts perfect and never changes", "Goes on an adventure, wins a victory, and comes home transformed", "Refuses to participate in the story", "Is the villain of the story"], answer: "Goes on an adventure, wins a victory, and comes home transformed" },
+            { question: "In business storytelling, the 'hero' of the story should often be:", options: ["The speaker", "The company", "The customer", "The product"], answer: "The customer" },
+            { question: "What is the primary function of the 'inciting incident' in a story?", options: ["It resolves the conflict", "It introduces the main character", "It sets the story in motion", "It provides the moral"], answer: "It sets the story in motion" },
+            { question: "A 'data story' is different from a data report because it:", options: ["Includes every single data point", "Is always presented in a spreadsheet", "Presents data with a narrative and a clear message", "Is purely fictional"], answer: "Presents data with a narrative and a clear message" },
+            { question: "Using a personal anecdote in a leadership speech can help to:", options: ["Prove you are better than your employees", "Build trust and appear more authentic", "Confuse the audience with irrelevant details", "Avoid talking about business objectives"], answer: "Build trust and appear more authentic" },
+            { question: "The three core components of a basic story are Setup, Confrontation, and ________.", options: ["Climax", "Introduction", "Resolution", "Theme"], answer: "Resolution" },
+            { question: "When using a story to illustrate a point, the story should be:", options: ["Long and complex", "Completely unrelated to the point", "Brief, relevant, and have a clear takeaway", "Difficult to understand"], answer: "Brief, relevant, and have a clear takeaway" },
+            { question: "True or False: Stories are more memorable than statistics alone.", options: ["True", "False"], answer: "True" },
+            { question: "'Show, don't tell' in storytelling means:", options: ["You should only use visual aids", "Using descriptive language to let the audience infer meaning", "Telling the audience exactly what to feel", "Avoiding dialogue"], answer: "Using descriptive language to let the audience infer meaning" },
+            { question: "In a business context, what is the most important question a story must answer for the audience?", options: ["'Why are you telling me this?'", "'How long will this take?'", "'Who is the author?'", "'When did this happen?'"], answer: "'Why are you telling me this?'" },
+
+            // --- Level 19: Intercultural Public Speaking ---
+            { question: "In high-context cultures, communication tends to be:", options: ["Direct, explicit, and verbal", "Indirect, relational, and reliant on non-verbal cues", "Fast-paced and informal", "Focused only on data"], answer: "Indirect, relational, and reliant on non-verbal cues" },
+            { question: "Making direct, sustained eye contact is considered a sign of respect in some cultures, but in others it can be seen as:", options: ["A sign of intelligence", "Aggressive or disrespectful", "A request for a promotion", "A sign of deep friendship"], answer: "Aggressive or disrespectful" },
+            { question: "When using humor in a cross-cultural presentation, it is safest to use:", options: ["Sarcasm and irony", "Puns and wordplay", "Humor that is self-deprecating or based on shared, universal experiences", "Jokes that are specific to your own culture"], answer: "Humor that is self-deprecating or based on shared, universal experiences" },
+            { question: "The concept of 'saving face' is particularly important in many:", options: ["Individualistic cultures", "Western cultures", "Collectivistic cultures", "Low-context cultures"], answer: "Collectivistic cultures" },
+            { question: "When using a translator, you should address your remarks to:", options: ["The translator", "The audience", "The senior person in the room", "The back wall"], answer: "The audience" },
+            { question: "Which of the following is an example of a low-context culture?", options: ["Japan", "China", "Germany", "Saudi Arabia"], answer: "Germany" },
+            { question: "True or False: The 'OK' hand gesture (thumb and index finger forming a circle) has a positive meaning in all cultures.", options: ["True", "False"], answer: "False" },
+            { question: "In cultures with a polychronic view of time, punctuality is often:", options: ["Strictly enforced", "More flexible and relationship-focused", "The most important virtue", "A sign of weakness"], answer: "More flexible and relationship-focused" },
+            { question: "To make your presentation more understandable for a non-native English-speaking audience, you should:", options: ["Speak very quickly", "Use complex idioms and slang", "Speak clearly and avoid jargon", "Use a monotone voice"], answer: "Speak clearly and avoid jargon" },
+            { question: "What is a 'backchannel' in communication?", options: ["A secret way of communicating", "The use of gestures to replace words", "Verbal and non-verbal cues (e.g., 'uh-huh', nodding) that listeners give to a speaker", "A secondary microphone"], answer: "Verbal and non-verbal cues (e.g., 'uh-huh', nodding) that listeners give to a speaker" },
+
+            // --- Level 20: Online & Virtual Presentations ---
+            { question: "When presenting virtually, where should you look to create the effect of making eye contact with the audience?", options: ["At your own image on the screen", "At the camera lens", "At the top of your monitor", "At the chat window"], answer: "At the camera lens" },
+            { question: "What is the 'three-point lighting' setup for video?", options: ["One light on the speaker, one on the background, one on the ceiling", "Key light, fill light, and back light", "Three spotlights of the same intensity", "A desk lamp, a floor lamp, and a window"], answer: "Key light, fill light, and back light" },
+            { question: "To keep a virtual audience engaged, it is a good practice to:", options: ["Speak in a monotone voice for 90 minutes", "Use interactive tools like polls, Q&A, and chat", "Disable the chat feature to avoid distractions", "Never show your face on camera"], answer: "Use interactive tools like polls, Q&A, and chat" },
+            { question: "What is a significant challenge of virtual presentations compared to in-person ones?", options: ["It's harder to get to the venue", "It's more difficult to read audience body language", "The snacks are not as good", "It's impossible to use slides"], answer: "It's more difficult to read audience body language" },
+            { question: "The 'rule of quarters' for virtual backgrounds suggests that:", options: ["You should change your background every quarter hour", "Your head should be positioned in the top-center quarter of the screen", "You should divide your screen into four quadrants for different content", "Your background should cost at least a quarter"], answer: "Your head should be positioned in the top-center quarter of the screen" },
+            { question: "For best audio quality in a virtual presentation, you should use:", options: ["Your laptop's built-in microphone", "An external microphone", "The microphone on your webcam", "Shouting at the screen"], answer: "An external microphone" },
+            { question: "True or False: It's important to have a backup plan (e.g., a hotspot, a PDF of your slides) in case of technical issues.", options: ["True", "False"], answer: "True" },
+            { question: "What does 'vocal fry' refer to?", options: ["A high, loud speaking voice", "A clear and resonant tone", "A low, creaky, vibrating sound at the end of sentences", "Speaking with a foreign accent"], answer: "A low, creaky, vibrating sound at the end of sentences" },
+            { question: "When sharing your screen, it is best to:", options: ["Share your entire desktop with all notifications visible", "Share only the specific application or window you are presenting", "Turn off your monitor so the audience can't see anything", "Ask the audience to guess what's on your screen"], answer: "Share only the specific application or window you are presenting" },
+            { question: "The 'PechaKucha' presentation format consists of:", options: ["10 slides, 10 seconds each", "50 slides, 1 minute each", "20 slides, 20 seconds each", "Unlimited slides and time"], answer: "20 slides, 20 seconds each" },
+
+            // --- Level 21: Rhetorical Devices & Eloquence ---
+            { question: "A statement that appears self-contradictory but contains a latent truth is a(n):", options: ["Oxymoron", "Paradox", "Understatement", "Hyperbole"], answer: "Paradox" },
+            { question: "The rhetorical device 'chiasmus' involves:", options: ["Repeating words in successive clauses, in reverse grammatical order", "A direct comparison using 'like' or 'as'", "Exaggeration for effect", "Giving human qualities to inanimate objects"], answer: "Repeating words in successive clauses, in reverse grammatical order" },
+            { question: "An example of an oxymoron is:", options: ["'The world is a stage'", "'Deafening silence'", "'As busy as a bee'", "'I have a million things to do'"], answer: "'Deafening silence'" },
+            { question: "What is 'epistrophe'?", options: ["The repetition of a word at the beginning of successive clauses", "The repetition of a word at the end of successive clauses", "The use of a word to govern two other words in different senses", "A question asked for effect"], answer: "The repetition of a word at the end of successive clauses" },
+            { question: "Personification is a figure of speech where:", options: ["A part represents the whole", "Human qualities are attributed to abstract ideas or inanimate objects", "A mild or indirect word is substituted for one considered too harsh", "An exaggeration is made for emphasis"], answer: "Human qualities are attributed to abstract ideas or inanimate objects" },
+            { question: "The phrase 'Ask not what your country can do for you—ask what you can do for your country' is a famous example of:", options: ["Simile", "Metaphor", "Antithesis", "Alliteration"], answer: "Antithesis" },
+            { question: "A 'synecdoche' is when:", options: ["A part of something is used to refer to the whole", "Two opposite ideas are joined to create an effect", "A sound word is used (e.g., 'buzz')", "A word is spelled the same forwards and backwards"], answer: "A part of something is used to refer to the whole" },
+            { question: "True or False: Alliteration is the repetition of vowel sounds in nearby words.", options: ["True", "False"], answer: "False" },
+            { question: "Using a word like 'downsized' instead of 'fired' is an example of:", options: ["Hyperbole", "Irony", "Euphemism", "Litotes"], answer: "Euphemism" },
+            { question: "Litotes is a rhetorical device that:", options: ["Employs an understatement by using double negatives", "Directly addresses an absent person or personified object", "Makes a compassionate appeal to the emotions", "Compares two unlike things"], answer: "Employs an understatement by using double negatives" },
+
+            // --- Level 22: Debate & Argumentation ---
+            { question: "In a formal debate, the 'rebuttal' speech is used to:", options: ["Introduce new arguments", "Refute the arguments made by the opposing team", "Summarize your own case", "Thank the judges"], answer: "Refute the arguments made by the opposing team" },
+            { question: "The 'straw man' fallacy occurs when a speaker:", options: ["Attacks the person making the argument", "Misrepresents an opponent's argument to make it easier to attack", "Asserts that a claim is true because many people believe it", "Assumes the conclusion is true in the argument's premises"], answer: "Misrepresents an opponent's argument to make it easier to attack" },
+            { question: "The 'burden of proof' in a debate lies with:", options: ["The team that makes the affirmative claim", "The team that opposes the claim", "The moderator", "The audience"], answer: "The team that makes the affirmative claim" },
+            { question: "The Toulmin model of argumentation includes the Claim, Grounds (Data), and ________.", options: ["Conclusion", "Warrant", "Question", "Rebuttal"], answer: "Warrant" },
+            { question: "A 'slippery slope' argument is a fallacy that:", options: ["Assumes correlation implies causation", "Asserts that a relatively small first step leads to a chain of related events culminating in some significant effect", "Uses an authority's opinion to support a claim", "Appeals to pity or guilt"], answer: "Asserts that a relatively small first step leads to a chain of related events culminating in some significant effect" },
+            { question: "What is a 'point of information' (POI) in British Parliamentary debate?", options: ["A question to the judges", "A brief point or question offered to the current speaker by an opponent", "A time-out", "A request to see the speaker's notes"], answer: "A brief point or question offered to the current speaker by an opponent" },
+            { question: "Deductive reasoning moves from:", options: ["Specific observations to a general conclusion", "General principles to a specific conclusion", "An analogy to a conclusion", "A hypothesis to an experiment"], answer: "General principles to a specific conclusion" },
+            { question: "True or False: In a debate, it is acceptable to agree with a point made by your opponent.", options: ["True", "False"], answer: "True" },
+            { question: "The 'bandwagon fallacy' is an argument that concludes a proposition must be true because:", options: ["An expert said so", "There is no evidence against it", "Many or most people believe it", "It has always been done that way"], answer: "Many or most people believe it" },
+            { question: "Inductive reasoning involves:", options: ["Starting with a proven theory", "Moving from specific instances to a generalized conclusion", "Using mathematical proofs", "Relying on emotional appeals"], answer: "Moving from specific instances to a generalized conclusion" },
+
+            // --- Level 23: Crisis Communication & Public Relations ---
+            { question: "In a crisis, the first and most critical message an organization should convey is:", options: ["Denial of the problem", "Blame for the problem", "Empathy and concern for those affected", "A detailed financial analysis"], answer: "Empathy and concern for those affected" },
+            { question: "A 'holding statement' in crisis communication is used to:", options: ["Provide a final, detailed report of the incident", "Acknowledge a situation quickly and state that more information will be forthcoming", "Deny all allegations permanently", "Announce the company's new CEO"], answer: "Acknowledge a situation quickly and state that more information will be forthcoming" },
+            { question: "The concept of speaking with 'one voice' during a crisis means:", options: ["Only the CEO is allowed to speak", "All communication is channeled through a designated spokesperson to ensure consistency", "The company should only release one press release", "Everyone should whisper"], answer: "All communication is channeled through a designated spokesperson to ensure consistency" },
+            { question: "When giving a media interview during a crisis, it is important to avoid:", options: ["Saying 'no comment'", "Speculation and jargon", "Expressing empathy", "Sticking to your key messages"], answer: "Speculation and jargon" },
+            { question: "Which is the most effective response to a crisis, according to Situational Crisis Communication Theory?", options: ["Denial strategies", "Diminish strategies", "Rebuild strategies (e.g., apology, compensation)", "Bolstering strategies"], answer: "Rebuild strategies (e.g., apology, compensation)" },
+            { question: "True or False: In a crisis, the media is your enemy.", options: ["True", "False"], answer: "False" },
+            { question: "The 'information vacuum' refers to a situation where:", options: ["The company provides too much information", "A lack of official information allows rumors and misinformation to spread", "The media refuses to report on a story", "All communication lines are down"], answer: "A lack of official information allows rumors and misinformation to spread" },
+            { question: "A key stakeholder to communicate with first during an internal crisis (e.g., a major layoff) is:", options: ["The media", "Customers", "Employees", "The government"], answer: "Employees" },
+            { question: "The phrase 'Never let a good crisis go to waste' implies that a crisis can be an opportunity to:", options: ["Blame competitors", "Demonstrate an organization's values and make positive changes", "Take a long vacation", "Sell more products"], answer: "Demonstrate an organization's values and make positive changes" },
+            { question: "In crisis communication, transparency means:", options: ["Telling the public every single internal detail", "Being as open and honest as possible within legal and privacy constraints", "Using clear materials for your press conference", "Waiting until the crisis is over to say anything"], answer: "Being as open and honest as possible within legal and privacy constraints" },
+
+            // --- Level 24: Famous Speeches & Orators ---
+            { question: "Martin Luther King Jr.'s 'I Have a Dream' speech is famous for its powerful use of:", options: ["Anaphora (repetition of a phrase at the beginning of sentences)", "Sarcasm", "Understatement", "Logical fallacies"], answer: "Anaphora (repetition of a phrase at the beginning of sentences)" },
+            { question: "Who delivered the 'Gettysburg Address'?", options: ["George Washington", "Abraham Lincoln", "Thomas Jefferson", "Franklin D. Roosevelt"], answer: "Abraham Lincoln" },
+            { question: "Winston Churchill's wartime speeches are known for their:", options: ["Appeals to surrender", "Defiant and inspiring tone", "Use of complex charts and graphs", "Humorous and lighthearted nature"], answer: "Defiant and inspiring tone" },
+            { question: "The Greek orator Demosthenes was known for practicing speaking with:", options: ["A loud orchestra", "Pebbles in his mouth to overcome a speech impediment", "His eyes closed", "A blindfold on"], answer: "Pebbles in his mouth to overcome a speech impediment" },
+            { question: "Sojourner Truth's famous 1851 speech on women's rights is commonly known by what title?", options: ["'Give Me Liberty or Give Me Death'", "'The Rights of Women'", "'Ain't I a Woman?'", "'Declaration of Sentiments'"], answer: "'Ain't I a Woman?'" },
+            { question: "John F. Kennedy's inaugural address is famous for the line:", options: ["'The only thing we have to fear is fear itself.'", "'Mr. Gorbachev, tear down this wall.'", "'Ask not what your country can do for you...'", "'A government of the people, by the people, for the people...'"], answer: "'Ask not what your country can do for you...'" },
+            { question: "The Roman senator Cicero was a master of rhetoric whose works heavily influenced:", options: ["Modern science", "Renaissance and Enlightenment thinkers", "Eastern philosophy", "Impressionist painting"], answer: "Renaissance and Enlightenment thinkers" },
+            { question: "True or False: The Gettysburg Address is over an hour long.", options: ["True", "False"], answer: "False" },
+            { question: "Who gave the 'Tryst with Destiny' speech on the eve of India's independence?", options: ["Mahatma Gandhi", "Sardar Patel", "Jawaharlal Nehru", "Subhas Chandra Bose"], answer: "Jawaharlal Nehru" },
+            { question: "Elizabeth I's 'Speech to the Troops at Tilbury' was given in anticipation of an attack by:", options: ["The French Navy", "The Viking hordes", "The Spanish Armada", "The Roman Empire"], answer: "The Spanish Armada" },
+        ];
+
+
+        const QUESTIONS_PER_LEVEL = 10;
+
+        // --- Question List Modal Component ---
+        const QuestionsList = ({ allQuestions, onClose }) => (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                    <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white">
+                        <h2 className="text-2xl font-bold text-gray-800">All Questions</h2>
+                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-3xl font-light">&times;</button>
+                    </div>
+                    <div className="p-6 overflow-y-auto">
+                        <div className="space-y-6">
+                            {allQuestions.map((q, index) => {
+                                const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+                                return (
+                                <div key={index} className="border-b pb-4 last:border-b-0">
+                                    <p className="font-semibold text-gray-800">
+                                        <span className="font-bold text-blue-600">Q{index + 1}:</span> {q.question}
+                                    </p>
+                                    <ul className="mt-2 space-y-1 pl-6">
+                                        {q.options.map((opt, i) => {
+                                            const isCorrect = correctAnswers.includes(opt);
+                                            return (
+                                            <li key={i} className={`text-gray-600 ${isCorrect ? 'font-bold text-green-700' : ''}`}>
+                                                - {opt}
+                                                {isCorrect && <span className="text-green-600 ml-2">(Correct)</span>}
+                                            </li>
+                                        )})}
+                                    </ul>
+                                </div>
+                            )})}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- Main App Component ---
+        function App() {
+            const [gameState, setGameState] = React.useState('start'); // 'start', 'levelGate', 'playing', 'levelResult', 'finished'
+            const [currentLevel, setCurrentLevel] = React.useState(0);
+            const [levelScore, setLevelScore] = React.useState(0);
+            const [userAnswers, setUserAnswers] = React.useState(Array(QUESTIONS_PER_LEVEL).fill([]));
+            const [submittedQuestions, setSubmittedQuestions] = React.useState(Array(QUESTIONS_PER_LEVEL).fill(false));
+            const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
+            const [showQuestionsList, setShowQuestionsList] = React.useState(false);
+
+
+            const totalLevels = allQuestions.length / QUESTIONS_PER_LEVEL;
+
+            const levelQuestions = React.useMemo(() => allQuestions.slice(
+                currentLevel * QUESTIONS_PER_LEVEL,
+                (currentLevel + 1) * QUESTIONS_PER_LEVEL
+            ), [currentLevel]);
+
+            const startLevel = () => {
+                setCurrentQuestionIndex(0);
+                setUserAnswers(Array(QUESTIONS_PER_LEVEL).fill([]));
+                setSubmittedQuestions(Array(QUESTIONS_PER_LEVEL).fill(false));
+                setGameState('playing');
+            };
+
+            const handleAnswerSelect = (option, questionIndex) => {
+                const newAnswers = [...userAnswers];
+                const currentSelection = newAnswers[questionIndex] || [];
+                
+                if (currentSelection.includes(option)) {
+                    newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
+                } else {
+                    newAnswers[questionIndex] = [...currentSelection, option];
+                }
+                setUserAnswers(newAnswers);
+            };
+
+            const handleSubmit = (index) => {
+                const newSubmitted = [...submittedQuestions];
+                newSubmitted[index] = true;
+                setSubmittedQuestions(newSubmitted);
+            };
+
+            const handleResetQuestion = (index) => {
+                const newAnswers = [...userAnswers];
+                newAnswers[index] = [];
+                setUserAnswers(newAnswers);
+
+                const newSubmitted = [...submittedQuestions];
+                newSubmitted[index] = false;
+                setSubmittedQuestions(newSubmitted);
+            };
+
+            const areArraysEqual = (arr1, arr2) => {
+                if (arr1.length !== arr2.length) return false;
+                const sorted1 = [...arr1].sort();
+                const sorted2 = [...arr2].sort();
+                return sorted1.every((value, index) => value === sorted2[index]);
+            };
+
+            const calculateScore = () => {
+                let score = 0;
+                for (let i = 0; i < levelQuestions.length; i++) {
+                    const question = levelQuestions[i];
+                    const userAnswer = userAnswers[i] || [];
+                    const correctAnswer = Array.isArray(question.answer) ? question.answer : [question.answer];
+                    
+                    if (areArraysEqual(userAnswer, correctAnswer)) {
+                        score++;
+                    }
+                }
+                setLevelScore(score);
+                setGameState('levelResult');
+            };
+            
+            const handleNextLevel = () => {
+                if (currentLevel < totalLevels - 1) {
+                    setCurrentLevel(prev => prev + 1);
+                    setGameState('levelGate');
+                } else {
+                    setGameState('finished');
+                }
+            };
+
+            const restartGame = () => {
+                setCurrentLevel(0);
+                setGameState('start');
+            }
+
+            // --- Components for different game states ---
+
+            const StartScreen = () => (
+                <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Public Speaking Quiz Game</h1>
+                    <p className="text-gray-600 mb-6">Test your knowledge across {totalLevels} levels of Public Speaking!</p>
+                    <button
+                        onClick={() => setGameState('levelGate')}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Start Game
+                    </button>
+                </div>
+            );
+            
+            const LevelGate = () => {
+                const isLastLevel = currentLevel >= totalLevels - 1;
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Level {currentLevel + 1}</h1>
+                        <p className="text-gray-600 mb-6">You need a perfect score to unlock the next level.</p>
+                        <div className="flex flex-col gap-4">
+                            <button
+                                onClick={startLevel}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                            >
+                                Begin Level
+                            </button>
+                            {!isLastLevel && (
+                                <button
+                                    onClick={handleNextLevel}
+                                    className="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 transition"
+                                >
+                                    Skip Level
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            
+            const LevelResult = () => {
+                const isPerfect = levelScore === QUESTIONS_PER_LEVEL;
+                const isLastLevel = currentLevel >= totalLevels - 1;
+
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                            {isPerfect ? 'Level Complete!' : 'Not Quite!'}
+                        </h1>
+                        <p className="text-2xl text-blue-600 font-semibold mb-6">
+                            Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
+                        </p>
+                        {!isPerfect && <p className="text-gray-600 mb-6">You need a perfect score to advance. Let's try again!</p>}
+
+                        <div className="flex flex-col gap-4 mt-6">
+                            {isPerfect ? (
+                                isLastLevel ? (
+                                    <button onClick={() => setGameState('finished')} className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-green-700 shadow-md">
+                                       Finish Game
+                                    </button>
+                                ) : (
+                                     <button onClick={handleNextLevel} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 shadow-md">
+                                        Next Level
+                                    </button>
+                                )
+                            ) : (
+                                 <button onClick={startLevel} className="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-yellow-600 shadow-md">
+                                    Try Again
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const FinishedScreen = () => (
+                 <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 mb-2">Congratulations!</h1>
+                    <p className="text-gray-600 mb-6">You have completed all {totalLevels} levels!</p>
+                    <button
+                        onClick={restartGame}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Play Again
+                    </button>
+                </div>
+            );
+
+            const QuizView = () => {
+                const question = levelQuestions[currentQuestionIndex];
+                const isSubmitted = submittedQuestions[currentQuestionIndex];
+                const selectedAnswers = userAnswers[currentQuestionIndex] || [];
+                const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
+                
+                const isAnswerCorrect = areArraysEqual(selectedAnswers, correctAnswers);
+                const isIncorrect = isSubmitted && !isAnswerCorrect;
+                const isMultiSelect = correctAnswers.length > 1;
+
+                const getButtonClass = (option) => {
+                    if (!isSubmitted) {
+                        return selectedAnswers.includes(option) 
+                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-300' 
+                            : 'bg-white hover:bg-gray-100 border-gray-300';
+                    }
+                    const isCorrect = correctAnswers.includes(option);
+                    const isSelected = selectedAnswers.includes(option);
+
+                    if (isCorrect) return 'bg-green-100 border-green-500 text-green-800 font-semibold';
+                    if (isSelected && !isCorrect) return 'bg-red-100 border-red-500 text-red-800 font-semibold';
+                    
+                    return 'bg-gray-100 border-gray-200 opacity-60';
+                };
+
+                const renderActionButton = () => {
+                    if (isIncorrect) {
+                        return (
+                             <button
+                                onClick={() => handleResetQuestion(currentQuestionIndex)}
+                                className="w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-yellow-600 transition-all text-sm sm:text-base col-span-2"
+                            >
+                                Try Again
+                            </button>
+                        );
+                    }
+                    if (isSubmitted) { // Correct answer
+                        if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
+                             return (
+                                <button
+                                    onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                                    className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-black transition-all text-sm sm:text-base col-span-2"
+                                >
+                                    Next
+                                </button>
+                            );
+                        } else {
+                            return (
+                                <button
+                                    onClick={calculateScore}
+                                    className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all text-sm sm:text-base col-span-2"
+                                >
+                                    Finish Level
+                                </button>
+                            );
+                        }
+                    }
+                    // Not submitted yet
+                    return (
+                         <button
+                            onClick={() => handleSubmit(currentQuestionIndex)}
+                            disabled={selectedAnswers.length === 0}
+                            className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 transition-all text-sm sm:text-base col-span-2"
+                        >
+                            Submit
+                        </button>
+                    );
+                };
+
+                return (
+                    <div>
+                        <div className="mb-6">
+                           <div className="flex justify-between items-center mb-2 text-gray-600 font-medium">
+                                <span>Level {currentLevel + 1}</span>
+                                <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
+                           </div>
+                           <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS_PER_LEVEL) * 100}%` }}></div>
+                           </div>
+                        </div>
+
+                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 min-h-[8rem] flex items-center">
+                            {question.question}
+                        </h2>
+                        <div className="space-y-3">
+                            {question.options.map((option, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleAnswerSelect(option, currentQuestionIndex)}
+                                    disabled={isSubmitted}
+                                    className={`w-full text-left p-4 rounded-lg font-medium transition-all duration-200 border shadow-sm ${getButtonClass(option)}`}
+                                >
+                                    {option}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 grid grid-cols-3 gap-3">
+                            <button
+                                onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                disabled={currentQuestionIndex === 0}
+                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 transition-all text-sm sm:text-base"
+                            >
+                                Previous
+                            </button>
+                            
+                           {renderActionButton()}
+                        </div>
+                    </div>
+                );
+            };
+            
+            const renderGameState = () => {
+                switch (gameState) {
+                    case 'start': return <StartScreen />;
+                    case 'levelGate': return <LevelGate />;
+                    case 'playing': return <QuizView />;
+                    case 'levelResult': return <LevelResult />;
+                    case 'finished': return <FinishedScreen />;
+                    default: return <StartScreen />;
+                }
+            }
+
+            return (
+                <React.Fragment>
+                    <button
+                        onClick={() => setShowQuestionsList(true)}
+                        className="fixed top-4 right-4 bg-white text-blue-600 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105 z-20"
+                    >
+                        List of Questions
+                    </button>
+
+                    {showQuestionsList && <QuestionsList allQuestions={allQuestions} onClose={() => setShowQuestionsList(false)} />}
+                    
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
+                            {renderGameState()}
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
