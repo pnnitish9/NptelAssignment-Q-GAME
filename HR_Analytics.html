@@ -14,20 +14,51 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        /* Style for dark mode scrollbar */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748; /* gray-800 */
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4a5568; /* gray-600 */
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #718096; /* gray-500 */
+        }
+        .dark .modal-content-area { /* Class added to modal content div */
+             scrollbar-color: #4a5568 #2d3748; /* thumb track for Firefox */
+        }
+
     </style>
      <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Initialize dark mode based on localStorage BEFORE React mounts
+      function setInitialTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+      }
+      setInitialTheme();
+    </script>
 </head>
-<body class="bg-gray-100">
-    <h1><a href="./index.html" style="color: rgb(19, 109, 145); padding: 20px; margin-left: 10px;">Back</a></h1>
+<body class="bg-gray-100 dark:bg-gray-900">
     <div id="root"></div>
 
     <script type="text/babel">
+        const { useState, useEffect, useMemo, Fragment } = React;
+
         // --- Data: All 240 Questions (with answers as arrays) ---
         const allQuestions = [
-            // --- FOUNDATIONAL LEVELS (1-12) ---
+             // --- FOUNDATIONAL LEVELS (1-12) ---
             { question: "What quadrant in the impact-complexity matrix corresponds to low impact, low complexity?", options: ["Quick win", "Big bet", "Pet project", "Trivial endeavor"], answer: ["Trivial endeavor"] },
             { question: "Which factor is part of assessing the impact of a project?", options: ["Technology readiness", "Number of HR staff", "Return on investment", "Analytics tools used"], answer: ["Return on investment"] },
             { question: "What skill set includes problem definition and stakeholder management?", options: ["Data science", "Communication", "Consulting", "HR administration"], answer: ["Consulting"] },
@@ -277,27 +308,27 @@
         // --- Question List Modal Component ---
         const QuestionsList = ({ allQuestions, onClose }) => (
             <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-                    <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white">
-                        <h2 className="text-2xl font-bold text-gray-800">All Questions</h2>
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-3xl font-light">&times;</button>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                    <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">All Questions</h2>
+                        <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 text-3xl font-light">&times;</button>
                     </div>
-                    <div className="p-6 overflow-y-auto">
+                    <div className="p-6 overflow-y-auto modal-content-area"> {/* Added class for Firefox scrollbar */}
                         <div className="space-y-6">
                             {allQuestions.map((q, index) => {
                                 const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
                                 return (
-                                <div key={index} className="border-b pb-4 last:border-b-0">
-                                    <p className="font-semibold text-gray-800">
-                                        <span className="font-bold text-blue-600">Q{index + 1}:</span> {q.question}
+                                <div key={index} className="border-b dark:border-gray-700 pb-4 last:border-b-0">
+                                    <p className="font-semibold text-gray-800 dark:text-gray-200">
+                                        <span className="font-bold text-blue-600 dark:text-blue-400">Q{index + 1}:</span> {q.question}
                                     </p>
                                     <ul className="mt-2 space-y-1 pl-6">
                                         {q.options.map((opt, i) => {
                                             const isCorrect = correctAnswers.includes(opt);
                                             return (
-                                            <li key={i} className={`text-gray-600 ${isCorrect ? 'font-bold text-green-700' : ''}`}>
+                                            <li key={i} className={`text-gray-600 dark:text-gray-400 ${isCorrect ? 'font-bold text-green-700 dark:text-green-400' : ''}`}>
                                                 - {opt}
-                                                {isCorrect && <span className="text-green-600 ml-2">(Correct)</span>}
+                                                {isCorrect && <span className="text-green-600 dark:text-green-500 ml-2">(Correct)</span>}
                                             </li>
                                         )})}
                                     </ul>
@@ -309,33 +340,75 @@
             </div>
         );
 
+         // --- Reusable Modal Component ---
+        function Modal({ isOpen, onClose, title, children }) {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                        <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{title}</h2>
+                            <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 text-3xl">&times;</button>
+                        </div>
+                        <div className="p-6 overflow-y-auto modal-content-area"> {/* Added class for Firefox scrollbar */}
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         // --- Main App Component ---
         function App() {
-            const [gameState, setGameState] = React.useState('start'); // 'start', 'levelGate', 'playing', 'levelResult', 'finished'
-            const [currentLevel, setCurrentLevel] = React.useState(0);
-            const [levelScore, setLevelScore] = React.useState(0);
-            const [userAnswers, setUserAnswers] = React.useState(Array(QUESTIONS_PER_LEVEL).fill([]));
-            const [submittedQuestions, setSubmittedQuestions] = React.useState(Array(QUESTIONS_PER_LEVEL).fill(false));
-            const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-            const [showQuestionsList, setShowQuestionsList] = React.useState(false);
+            const [gameState, setGameState] = useState('start'); // 'start', 'levelGate', 'playing', 'levelResult', 'finished'
+            const [currentLevel, setCurrentLevel] = useState(0);
+            const [levelScore, setLevelScore] = useState(0);
+            const [userAnswers, setUserAnswers] = useState(Array(QUESTIONS_PER_LEVEL).fill([]));
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [showQuestionsList, setShowQuestionsList] = useState(false);
+            const [incorrectAnswersList, setIncorrectAnswersList] = useState([]);
+            const [isDarkMode, setIsDarkMode] = useState(() => {
+                 // Check localStorage first
+                if (localStorage.theme === 'dark') return true;
+                if (localStorage.theme === 'light') return false;
+                // Otherwise, check system preference
+                return window.matchMedia('(prefers-color-scheme: dark)').matches;
+            });
+
+            useEffect(() => {
+                const root = window.document.documentElement;
+                if (isDarkMode) {
+                    root.classList.add('dark');
+                    localStorage.theme = 'dark';
+                } else {
+                    root.classList.remove('dark');
+                    localStorage.theme = 'light';
+                }
+            }, [isDarkMode]);
+
+            const toggleDarkMode = () => {
+                setIsDarkMode(!isDarkMode);
+            };
 
 
             const totalLevels = allQuestions.length / QUESTIONS_PER_LEVEL;
 
-            const levelQuestions = React.useMemo(() => allQuestions.slice(
+            const levelQuestions = useMemo(() => allQuestions.slice(
                 currentLevel * QUESTIONS_PER_LEVEL,
                 (currentLevel + 1) * QUESTIONS_PER_LEVEL
             ), [currentLevel]);
 
             const areArraysEqual = (arr1, arr2) => {
-                if (arr1.length !== arr2.length) return false;
+                if (!arr1 || !arr2 || arr1.length !== arr2.length) return false;
                 const sorted1 = [...arr1].sort();
                 const sorted2 = [...arr2].sort();
                 return sorted1.every((value, index) => value === sorted2[index]);
             };
 
-            const calculateScore = () => {
+            const calculateScoreAndIncorrect = () => {
                 let score = 0;
+                const incorrect = [];
                 for (let i = 0; i < levelQuestions.length; i++) {
                     const question = levelQuestions[i];
                     const userAnswer = userAnswers[i] || [];
@@ -343,16 +416,24 @@
                     
                     if (areArraysEqual(userAnswer, correctAnswer)) {
                         score++;
+                    } else {
+                         incorrect.push({
+                            questionIndex: i, // Store index within the level
+                            questionText: question.question,
+                            userAnswer: userAnswer,
+                            correctAnswer: correctAnswer
+                        });
                     }
                 }
                 setLevelScore(score);
+                setIncorrectAnswersList(incorrect); // Store incorrect answers
                 setGameState('levelResult');
             };
             
             const startLevel = () => {
                 setCurrentQuestionIndex(0);
                 setUserAnswers(Array(QUESTIONS_PER_LEVEL).fill([]));
-                setSubmittedQuestions(Array(QUESTIONS_PER_LEVEL).fill(false));
+                setIncorrectAnswersList([]); // Clear previous incorrect answers
                 setGameState('playing');
             };
 
@@ -366,31 +447,26 @@
                 
                 if (isMultiSelect) {
                     if (currentSelection.includes(option)) {
+                        // Deselect if already selected
                         newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
                     } else {
+                        // Select if not already selected
                         newAnswers[questionIndex] = [...currentSelection, option];
                     }
                 } else {
+                    // Single select: always replace current selection
                     newAnswers[questionIndex] = [option];
                 }
 
                 setUserAnswers(newAnswers);
             };
-
-            const handleSubmit = (index) => {
-                const newSubmitted = [...submittedQuestions];
-                newSubmitted[index] = true;
-                setSubmittedQuestions(newSubmitted);
-            };
-
-            const handleResetQuestion = (index) => {
-                const newAnswers = [...userAnswers];
-                newAnswers[index] = [];
-                setUserAnswers(newAnswers);
-
-                const newSubmitted = [...submittedQuestions];
-                newSubmitted[index] = false;
-                setSubmittedQuestions(newSubmitted);
+            
+            const handleNextQuestion = () => {
+                 if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
+                    setCurrentQuestionIndex(prev => prev + 1);
+                 } else {
+                    calculateScoreAndIncorrect(); // Calculate score at the end of the level
+                 }
             };
             
             const handleNextLevel = () => {
@@ -411,8 +487,8 @@
 
             const StartScreen = () => (
                 <div className="text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">HR Analytics Quiz Game</h1>
-                    <p className="text-gray-600 mb-6">Test your knowledge across {totalLevels} levels of HR Analytics!</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">HR Analytics Quiz Game</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">Test your knowledge across {totalLevels} levels of HR Analytics!</p>
                     <button
                         onClick={() => setGameState('levelGate')}
                         className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
@@ -426,8 +502,8 @@
                 const isLastLevel = currentLevel >= totalLevels - 1;
                 return (
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Level {currentLevel + 1}</h1>
-                        <p className="text-gray-600 mb-6">You need a perfect score to unlock the next level.</p>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Level {currentLevel + 1}</h1>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to unlock the next level.</p>
                         <div className="flex flex-col gap-4">
                             <button
                                 onClick={startLevel}
@@ -438,7 +514,7 @@
                             {!isLastLevel && (
                                 <button
                                     onClick={handleNextLevel}
-                                    className="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 transition"
+                                    className="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                                 >
                                     Skip Level
                                 </button>
@@ -455,13 +531,41 @@
 
                 return (
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-                            {isPerfect ? 'Level Complete!' : 'Not Quite!'}
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                            {isPerfect ? 'Level Complete!' : 'Level Result'}
                         </h1>
-                        <p className="text-2xl text-blue-600 font-semibold mb-6">
+                        <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6">
                             Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
                         </p>
-                        {!isPerfect && <p className="text-gray-600 mb-6">You need a perfect score to advance. Let's try again!</p>}
+                        
+                        {!isPerfect && (
+                            <div className="mt-6 mb-8 text-left max-h-60 overflow-y-auto bg-red-50 dark:bg-red-900 dark:bg-opacity-20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                                <h3 className="text-lg font-semibold text-red-800 dark:text-red-300 mb-3">Review Incorrect Answers:</h3>
+                                {incorrectAnswersList.length > 0 ? (
+                                    <ul className="space-y-3">
+                                        {incorrectAnswersList.map((item, index) => (
+                                            <li key={index} className="text-sm">
+                                                <p className="font-medium text-gray-700 dark:text-gray-300">
+                                                   Q{item.questionIndex + 1}: {item.questionText}
+                                                </p>
+                                                <p className="text-red-600 dark:text-red-400">
+                                                   Your Answer: {item.userAnswer.length > 0 ? item.userAnswer.join(', ') : 'No answer'}
+                                                </p>
+                                                <p className="text-green-600 dark:text-green-400">
+                                                   Correct Answer: {item.correctAnswer.join(', ')}
+                                                </p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    // This case should ideally not be reached if score is not perfect,
+                                    // but provides a fallback message.
+                                    <p className="text-gray-600 dark:text-gray-400">All answers were correct!</p> 
+                                )}
+                            </div>
+                        )}
+
+                        {!isPerfect && <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to advance. Let's try again!</p>}
 
                         <div className="flex flex-col gap-4 mt-6">
                             {isPerfect ? (
@@ -476,7 +580,7 @@
                                 )
                             ) : (
                                  <button onClick={startLevel} className="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-yellow-600 shadow-md">
-                                    Try Again
+                                    Try Level Again
                                 </button>
                             )}
                         </div>
@@ -486,8 +590,8 @@
 
             const FinishedScreen = () => (
                  <div className="text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 mb-2">Congratulations!</h1>
-                    <p className="text-gray-600 mb-6">You have completed all {totalLevels} levels!</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">Congratulations!</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">You have completed all {totalLevels} levels!</p>
                     <button
                         onClick={restartGame}
                         className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
@@ -499,96 +603,38 @@
 
             const QuizView = () => {
                 const question = levelQuestions[currentQuestionIndex];
-                const isSubmitted = submittedQuestions[currentQuestionIndex];
                 const selectedAnswers = userAnswers[currentQuestionIndex] || [];
                 const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
-                
-                const isCorrect = isSubmitted && areArraysEqual(selectedAnswers, correctAnswers);
-                const isIncorrect = isSubmitted && !isCorrect;
                 const isMultiSelect = correctAnswers.length > 1;
 
-                const getButtonClass = (option) => {
-                    if (!isSubmitted) {
-                        return selectedAnswers.includes(option) 
-                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-300' 
-                            : 'bg-white hover:bg-gray-100 border-gray-300';
-                    }
-                    const isACorrectAnswer = correctAnswers.includes(option);
-                    const isASelectedAnswer = selectedAnswers.includes(option);
-
-                    if (isACorrectAnswer) return 'bg-green-100 border-green-500 text-green-800 font-semibold';
-                    if (isASelectedAnswer && !isACorrectAnswer) return 'bg-red-100 border-red-500 text-red-800 font-semibold';
-                    
-                    return 'bg-gray-100 border-gray-200 opacity-60';
-                };
-
-                const renderActionButton = () => {
-                    if (isIncorrect) {
-                        return (
-                             <button
-                                onClick={() => handleResetQuestion(currentQuestionIndex)}
-                                className="w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-yellow-600 transition-all text-sm sm:text-base col-span-2"
-                            >
-                                Try Again
-                            </button>
-                        );
-                    }
-                    if (isSubmitted) { // Correct answer
-                        if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
-                             return (
-                                <button
-                                    onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                                    className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-black transition-all text-sm sm:text-base col-span-2"
-                                >
-                                    Next
-                                </button>
-                            );
-                        } else {
-                            return (
-                                <button
-                                    onClick={calculateScore}
-                                    className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all text-sm sm:text-base col-span-2"
-                                >
-                                    Finish Level
-                                </button>
-                            );
-                        }
-                    }
-                    // Not submitted yet
-                    return (
-                         <button
-                            onClick={() => handleSubmit(currentQuestionIndex)}
-                            disabled={selectedAnswers.length === 0}
-                            className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 transition-all text-sm sm:text-base col-span-2"
-                        >
-                            Submit
-                        </button>
-                    );
-                };
+                 const getButtonClass = (option) => {
+                     return selectedAnswers.includes(option)
+                        ? 'bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30 border-blue-500 dark:border-blue-700 ring-2 ring-blue-300 dark:ring-blue-700 text-blue-800 dark:text-blue-200' 
+                        : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200';
+                 };
 
                 return (
                     <div>
                         <div className="mb-6">
-                           <div className="flex justify-between items-center mb-2 text-gray-600 font-medium">
+                           <div className="flex justify-between items-center mb-2 text-gray-600 dark:text-gray-400 font-medium">
                                 <span>Level {currentLevel + 1}</span>
                                 <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
                            </div>
-                           <div className="w-full bg-gray-200 rounded-full h-2.5">
+                           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                                 <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS_PER_LEVEL) * 100}%` }}></div>
                            </div>
                         </div>
 
-                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2 min-h-[6rem] flex items-center">
+                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-2 min-h-[6rem] flex items-center">
                             {question.question}
                         </h2>
-                        {isMultiSelect && <p className="text-sm text-gray-500 mb-4">(Select all that apply)</p>}
+                        {isMultiSelect && <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">(Select all that apply)</p>}
 
                         <div className="space-y-3">
                             {question.options.map((option, index) => (
                                 <button
                                     key={index}
                                     onClick={() => handleAnswerSelect(option, currentQuestionIndex)}
-                                    disabled={isSubmitted}
                                     className={`w-full text-left p-4 rounded-lg font-medium transition-all duration-200 border shadow-sm ${getButtonClass(option)}`}
                                 >
                                     {option}
@@ -596,16 +642,22 @@
                             ))}
                         </div>
 
-                        <div className="mt-8 grid grid-cols-3 gap-3">
+                        <div className="mt-8 grid grid-cols-2 gap-3">
                             <button
                                 onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
                                 disabled={currentQuestionIndex === 0}
-                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 transition-all text-sm sm:text-base"
+                                className="w-full bg-gray-500 dark:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 disabled:bg-gray-300 dark:disabled:bg-gray-500 transition-all text-sm sm:text-base"
                             >
                                 Previous
                             </button>
                             
-                           {renderActionButton()}
+                           <button
+                                onClick={handleNextQuestion}
+                                disabled={selectedAnswers.length === 0} // Disable if no answer selected
+                                className="w-full bg-gray-800 dark:bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-black dark:hover:bg-indigo-700 disabled:bg-gray-400 dark:disabled:bg-gray-500 transition-all text-sm sm:text-base"
+                            >
+                                {currentQuestionIndex < QUESTIONS_PER_LEVEL - 1 ? 'Next' : 'Finish Level'}
+                            </button>
                         </div>
                     </div>
                 );
@@ -623,22 +675,44 @@
             }
 
             return (
-                <React.Fragment>
+                <Fragment>
+                    {/* Dark Mode Toggle */}
+                    <button
+                        onClick={toggleDarkMode}
+                        className="fixed top-4 left-4 p-2 rounded-full bg-white dark:bg-gray-700 shadow-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition z-20"
+                        aria-label="Toggle Dark Mode"
+                    >
+                         {isDarkMode ? (
+                            // Moon Icon
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                            </svg>
+                         ) : (
+                             // Sun Icon
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464A1 1 0 106.465 13.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm-.707-7.072l.707-.707A1 1 0 003.634 5.05l-.707.707a1 1 0 001.414 1.414zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" />
+                            </svg>
+                         )}
+                    </button>
+                    
+                    {/* List of Questions Button */}
                     <button
                         onClick={() => setShowQuestionsList(true)}
-                        className="fixed top-4 right-4 bg-white text-blue-600 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105 z-20"
+                        className="fixed top-4 right-4 bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-transform transform hover:scale-105 z-20"
                     >
                         List of Questions
                     </button>
 
+                    {/* Question List Modal */}
                     {showQuestionsList && <QuestionsList allQuestions={allQuestions} onClose={() => setShowQuestionsList(false)} />}
                     
+                    {/* Main Game Area */}
                     <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
+                        <div className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 transform transition-colors duration-300">
                             {renderGameState()}
                         </div>
                     </div>
-                </React.Fragment>
+                </Fragment>
             );
         }
 

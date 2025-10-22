@@ -17,11 +17,10 @@
         }
     </style>
      <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    </head>
-    <body class="bg-gray-100">
-    <h1><a href="./index.html" style="color: rgb(19, 109, 145); padding: 20px; margin-left: 10px;">Back</a></h1>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -321,30 +320,38 @@
 
         const QUESTIONS_PER_LEVEL = 10;
 
+        // --- Helper Function ---
+        const areArraysEqual = (arr1, arr2) => {
+            if (arr1.length !== arr2.length) return false;
+            const sorted1 = [...arr1].sort();
+            const sorted2 = [...arr2].sort();
+            return sorted1.every((value, index) => value === sorted2[index]);
+        };
+
         // --- Question List Modal Component ---
         const QuestionsList = ({ allQuestions, onClose }) => (
             <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-                    <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white">
-                        <h2 className="text-2xl font-bold text-gray-800">All Questions</h2>
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-3xl font-light">&times;</button>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                    <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">All Questions</h2>
+                        <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 text-3xl font-light">&times;</button>
                     </div>
                     <div className="p-6 overflow-y-auto">
                         <div className="space-y-6">
                             {allQuestions.map((q, index) => {
                                 const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
                                 return (
-                                <div key={index} className="border-b pb-4 last:border-b-0">
-                                    <p className="font-semibold text-gray-800">
+                                <div key={index} className="border-b dark:border-gray-700 pb-4 last:border-b-0">
+                                    <p className="font-semibold text-gray-800 dark:text-gray-100">
                                         <span className="font-bold text-blue-600">Q{index + 1}:</span> {q.question}
                                     </p>
                                     <ul className="mt-2 space-y-1 pl-6">
                                         {q.options.map((opt, i) => {
                                             const isCorrect = correctAnswers.includes(opt);
                                             return (
-                                            <li key={i} className={`text-gray-600 ${isCorrect ? 'font-bold text-green-700' : ''}`}>
+                                            <li key={i} className={`text-gray-600 dark:text-gray-400 ${isCorrect ? 'font-bold text-green-700 dark:text-green-400' : ''}`}>
                                                 - {opt}
-                                                {isCorrect && <span className="text-green-600 ml-2">(Correct)</span>}
+                                                {isCorrect && <span className="text-green-600 dark:text-green-400 ml-2">(Correct)</span>}
                                             </li>
                                         )})}
                                     </ul>
@@ -355,6 +362,26 @@
                 </div>
             </div>
         );
+        
+        // --- Header Component ---
+        const Header = ({ onShowList, darkMode, setDarkMode }) => {
+            return (
+                <div className="fixed top-4 right-4 z-20 flex gap-3">
+                    <button
+                        onClick={onShowList}
+                        className="bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all transform hover:scale-105"
+                    >
+                        List of Questions
+                    </button>
+                    <button
+                        onClick={() => setDarkMode(prev => !prev)}
+                        className="bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all transform hover:scale-105"
+                    >
+                        {darkMode ? '☀️ Light' : '🌙 Dark'}
+                    </button>
+                </div>
+            );
+        };
 
         // --- Main App Component ---
         function App() {
@@ -362,9 +389,17 @@
             const [currentLevel, setCurrentLevel] = React.useState(0);
             const [levelScore, setLevelScore] = React.useState(0);
             const [userAnswers, setUserAnswers] = React.useState(Array(QUESTIONS_PER_LEVEL).fill([]));
-            const [submittedQuestions, setSubmittedQuestions] = React.useState(Array(QUESTIONS_PER_LEVEL).fill(false));
             const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
             const [showQuestionsList, setShowQuestionsList] = React.useState(false);
+            const [darkMode, setDarkMode] = React.useState(false);
+
+            React.useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }, [darkMode]);
 
 
             const totalLevels = allQuestions.length / QUESTIONS_PER_LEVEL;
@@ -377,43 +412,27 @@
             const startLevel = () => {
                 setCurrentQuestionIndex(0);
                 setUserAnswers(Array(QUESTIONS_PER_LEVEL).fill([]));
-                setSubmittedQuestions(Array(QUESTIONS_PER_LEVEL).fill(false));
                 setGameState('playing');
             };
 
             const handleAnswerSelect = (option, questionIndex) => {
                 const newAnswers = [...userAnswers];
                 const currentSelection = newAnswers[questionIndex] || [];
-                
-                if (currentSelection.includes(option)) {
-                    newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
+                const question = levelQuestions[questionIndex];
+                const isMulti = Array.isArray(question.answer);
+
+                if (isMulti) {
+                    if (currentSelection.includes(option)) {
+                        newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
+                    } else {
+                        newAnswers[questionIndex] = [...currentSelection, option];
+                    }
                 } else {
-                    newAnswers[questionIndex] = [...currentSelection, option];
+                    // Single select, just replace
+                    newAnswers[questionIndex] = [option];
                 }
+                
                 setUserAnswers(newAnswers);
-            };
-
-            const handleSubmit = (index) => {
-                const newSubmitted = [...submittedQuestions];
-                newSubmitted[index] = true;
-                setSubmittedQuestions(newSubmitted);
-            };
-
-            const handleResetQuestion = (index) => {
-                const newAnswers = [...userAnswers];
-                newAnswers[index] = [];
-                setUserAnswers(newAnswers);
-
-                const newSubmitted = [...submittedQuestions];
-                newSubmitted[index] = false;
-                setSubmittedQuestions(newSubmitted);
-            };
-
-            const areArraysEqual = (arr1, arr2) => {
-                if (arr1.length !== arr2.length) return false;
-                const sorted1 = [...arr1].sort();
-                const sorted2 = [...arr2].sort();
-                return sorted1.every((value, index) => value === sorted2[index]);
             };
 
             const calculateScore = () => {
@@ -449,8 +468,8 @@
 
             const StartScreen = () => (
                 <div className="text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Public Speaking Quiz Game</h1>
-                    <p className="text-gray-600 mb-6">Test your knowledge across {totalLevels} levels of Public Speaking!</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Public Speaking Quiz Game</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">Test your knowledge across {totalLevels} levels of Public Speaking!</p>
                     <button
                         onClick={() => setGameState('levelGate')}
                         className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
@@ -464,8 +483,8 @@
                 const isLastLevel = currentLevel >= totalLevels - 1;
                 return (
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Level {currentLevel + 1}</h1>
-                        <p className="text-gray-600 mb-6">You need a perfect score to unlock the next level.</p>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Level {currentLevel + 1}</h1>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to unlock the next level.</p>
                         <div className="flex flex-col gap-4">
                             <button
                                 onClick={startLevel}
@@ -476,7 +495,7 @@
                             {!isLastLevel && (
                                 <button
                                     onClick={handleNextLevel}
-                                    className="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 transition"
+                                    className="w-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                                 >
                                     Skip Level
                                 </button>
@@ -487,19 +506,47 @@
             };
 
             
-            const LevelResult = () => {
+            const LevelResult = ({ levelScore, levelQuestions, userAnswers }) => {
                 const isPerfect = levelScore === QUESTIONS_PER_LEVEL;
                 const isLastLevel = currentLevel >= totalLevels - 1;
 
                 return (
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-                            {isPerfect ? 'Level Complete!' : 'Not Quite!'}
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                            {isPerfect ? 'Level Complete!' : 'Level Results'}
                         </h1>
-                        <p className="text-2xl text-blue-600 font-semibold mb-6">
+                        <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6">
                             Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
                         </p>
-                        {!isPerfect && <p className="text-gray-600 mb-6">You need a perfect score to advance. Let's try again!</p>}
+                        
+                        {/* --- Results Breakdown --- */}
+                        <div className="text-left max-h-60 overflow-y-auto border-t border-b dark:border-gray-700 py-4 px-2 space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 sticky top-0 bg-white dark:bg-gray-800 pb-2">Your Results</h3>
+                            {levelQuestions.map((q, index) => {
+                                const ua = userAnswers[index] || [];
+                                const ca = Array.isArray(q.answer) ? q.answer : [q.answer];
+                                const isCorrect = areArraysEqual(ua, ca);
+
+                                return (
+                                    <div key={index} className={`p-3 rounded-lg ${isCorrect ? 'bg-green-50 dark:bg-green-900/50' : 'bg-red-50 dark:bg-red-900/50'}`}>
+                                        <p className="font-semibold text-gray-800 dark:text-gray-100 flex items-start">
+                                            <span className="mr-2">{isCorrect ? '✅' : '❌'}</span>
+                                            {index + 1}. {q.question}
+                                        </p>
+                                        <p className="pl-6 text-sm text-gray-700 dark:text-gray-300 mt-1">
+                                            Your answer: <span className="font-medium">{ua.join(', ') || 'No answer'}</span>
+                                        </p>
+                                        {!isCorrect && (
+                                            <p className="pl-6 text-sm text-green-700 dark:text-green-400 font-semibold">
+                                                Correct answer: {ca.join(', ')}
+                                            </p>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {!isPerfect && !isLastLevel && <p className="text-gray-600 dark:text-gray-400 my-6">You need a perfect score to advance. Let's try again!</p>}
 
                         <div className="flex flex-col gap-4 mt-6">
                             {isPerfect ? (
@@ -517,6 +564,12 @@
                                     Try Again
                                 </button>
                             )}
+                            {/* Always allow returning to main menu */}
+                            {!isLastLevel && (
+                                 <button onClick={restartGame} className="w-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                                    Main Menu
+                                </button>
+                            )}
                         </div>
                     </div>
                 );
@@ -524,8 +577,8 @@
 
             const FinishedScreen = () => (
                  <div className="text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 mb-2">Congratulations!</h1>
-                    <p className="text-gray-600 mb-6">You have completed all {totalLevels} levels!</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">Congratulations!</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">You have completed all {totalLevels} levels!</p>
                     <button
                         onClick={restartGame}
                         className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
@@ -537,86 +590,55 @@
 
             const QuizView = () => {
                 const question = levelQuestions[currentQuestionIndex];
-                const isSubmitted = submittedQuestions[currentQuestionIndex];
                 const selectedAnswers = userAnswers[currentQuestionIndex] || [];
                 const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
-                
-                const isAnswerCorrect = areArraysEqual(selectedAnswers, correctAnswers);
-                const isIncorrect = isSubmitted && !isAnswerCorrect;
                 const isMultiSelect = correctAnswers.length > 1;
 
                 const getButtonClass = (option) => {
-                    if (!isSubmitted) {
-                        return selectedAnswers.includes(option) 
-                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-300' 
-                            : 'bg-white hover:bg-gray-100 border-gray-300';
-                    }
-                    const isCorrect = correctAnswers.includes(option);
-                    const isSelected = selectedAnswers.includes(option);
-
-                    if (isCorrect) return 'bg-green-100 border-green-500 text-green-800 font-semibold';
-                    if (isSelected && !isCorrect) return 'bg-red-100 border-red-500 text-red-800 font-semibold';
-                    
-                    return 'bg-gray-100 border-gray-200 opacity-60';
+                    return selectedAnswers.includes(option) 
+                        ? 'bg-blue-100 dark:bg-blue-900/60 border-blue-500 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700 text-blue-800 dark:text-blue-200' 
+                        : 'bg-white dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600';
                 };
 
                 const renderActionButton = () => {
-                    if (isIncorrect) {
-                        return (
-                             <button
-                                onClick={() => handleResetQuestion(currentQuestionIndex)}
-                                className="w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-yellow-600 transition-all text-sm sm:text-base col-span-2"
+                    const isDisabled = selectedAnswers.length === 0;
+
+                    if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
+                         return (
+                            <button
+                                onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                                disabled={isDisabled}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-blue-800 dark:disabled:text-gray-400 transition-all text-sm sm:text-base col-span-2"
                             >
-                                Try Again
+                                Next
+                            </button>
+                        );
+                    } else {
+                        return (
+                            <button
+                                onClick={calculateScore}
+                                disabled={isDisabled}
+                                className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 dark:disabled:bg-green-800 dark:disabled:text-gray-400 transition-all text-sm sm:text-base col-span-2"
+                            >
+                                Finish Level
                             </button>
                         );
                     }
-                    if (isSubmitted) { // Correct answer
-                        if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
-                             return (
-                                <button
-                                    onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                                    className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-black transition-all text-sm sm:text-base col-span-2"
-                                >
-                                    Next
-                                </button>
-                            );
-                        } else {
-                            return (
-                                <button
-                                    onClick={calculateScore}
-                                    className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all text-sm sm:text-base col-span-2"
-                                >
-                                    Finish Level
-                                </button>
-                            );
-                        }
-                    }
-                    // Not submitted yet
-                    return (
-                         <button
-                            onClick={() => handleSubmit(currentQuestionIndex)}
-                            disabled={selectedAnswers.length === 0}
-                            className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 transition-all text-sm sm:text-base col-span-2"
-                        >
-                            Submit
-                        </button>
-                    );
                 };
 
                 return (
                     <div>
                         <div className="mb-6">
-                           <div className="flex justify-between items-center mb-2 text-gray-600 font-medium">
+                           <div className="flex justify-between items-center mb-2 text-gray-600 dark:text-gray-400 font-medium">
                                 <span>Level {currentLevel + 1}</span>
                                 <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
                            </div>
-                           <div className="w-full bg-gray-200 rounded-full h-2.5">
+                           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                                 <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS_PER_LEVEL) * 100}%` }}></div>
                            </div>
                         </div>
 
-                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 min-h-[8rem] flex items-center">
+                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6 min-h-[8rem] flex items-center">
                             {question.question}
                         </h2>
                         <div className="space-y-3">
@@ -624,7 +646,6 @@
                                 <button
                                     key={index}
                                     onClick={() => handleAnswerSelect(option, currentQuestionIndex)}
-                                    disabled={isSubmitted}
                                     className={`w-full text-left p-4 rounded-lg font-medium transition-all duration-200 border shadow-sm ${getButtonClass(option)}`}
                                 >
                                     {option}
@@ -636,7 +657,7 @@
                             <button
                                 onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
                                 disabled={currentQuestionIndex === 0}
-                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 transition-all text-sm sm:text-base"
+                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 dark:disabled:text-gray-400 transition-all text-sm sm:text-base"
                             >
                                 Previous
                             </button>
@@ -652,7 +673,7 @@
                     case 'start': return <StartScreen />;
                     case 'levelGate': return <LevelGate />;
                     case 'playing': return <QuizView />;
-                    case 'levelResult': return <LevelResult />;
+                    case 'levelResult': return <LevelResult levelScore={levelScore} levelQuestions={levelQuestions} userAnswers={userAnswers} />;
                     case 'finished': return <FinishedScreen />;
                     default: return <StartScreen />;
                 }
@@ -660,17 +681,16 @@
 
             return (
                 <React.Fragment>
-                    <button
-                        onClick={() => setShowQuestionsList(true)}
-                        className="fixed top-4 right-4 bg-white text-blue-600 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105 z-20"
-                    >
-                        List of Questions
-                    </button>
+                    <Header 
+                        onShowList={() => setShowQuestionsList(true)}
+                        darkMode={darkMode}
+                        setDarkMode={setDarkMode}
+                    />
 
                     {showQuestionsList && <QuestionsList allQuestions={allQuestions} onClose={() => setShowQuestionsList(false)} />}
                     
                     <div className="min-h-screen flex items-center justify-center p-4">
-                        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
+                        <div className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
                             {renderGameState()}
                         </div>
                     </div>
