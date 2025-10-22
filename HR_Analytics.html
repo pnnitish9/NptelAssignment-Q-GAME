@@ -502,21 +502,21 @@
                 const isLastLevel = currentLevel >= totalLevels - 1;
                 return (
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Level {currentLevel + 1}</h1>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to unlock the next level.</p>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Week {currentLevel + 1}</h1>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to unlock the next Week.</p>
                         <div className="flex flex-col gap-4">
                             <button
                                 onClick={startLevel}
                                 className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
                             >
-                                Begin Level
+                                Begin Week
                             </button>
                             {!isLastLevel && (
                                 <button
                                     onClick={handleNextLevel}
                                     className="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                                 >
-                                    Skip Level
+                                    Skip Week
                                 </button>
                             )}
                         </div>
@@ -532,7 +532,7 @@
                 return (
                     <div className="text-center">
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-                            {isPerfect ? 'Level Complete!' : 'Level Result'}
+                            {isPerfect ? 'week Complete!' : 'week Result'}
                         </h1>
                         <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6">
                             Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
@@ -575,12 +575,12 @@
                                     </button>
                                 ) : (
                                      <button onClick={handleNextLevel} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 shadow-md">
-                                       Next Level
+                                       Next Week
                                     </button>
                                 )
                             ) : (
                                  <button onClick={startLevel} className="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-yellow-600 shadow-md">
-                                    Try Level Again
+                                    Try Week Again
                                 </button>
                             )}
                         </div>
@@ -591,7 +591,7 @@
             const FinishedScreen = () => (
                  <div className="text-center">
                     <h1 className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">Congratulations!</h1>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">You have completed all {totalLevels} levels!</p>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">You have completed all {totalLevels} Weeks!</p>
                     <button
                         onClick={restartGame}
                         className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
@@ -617,7 +617,7 @@
                     <div>
                         <div className="mb-6">
                            <div className="flex justify-between items-center mb-2 text-gray-600 dark:text-gray-400 font-medium">
-                                <span>Level {currentLevel + 1}</span>
+                                <span>Week {currentLevel + 1}</span>
                                 <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
                            </div>
                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
@@ -656,7 +656,7 @@
                                 disabled={selectedAnswers.length === 0} // Disable if no answer selected
                                 className="w-full bg-gray-800 dark:bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-black dark:hover:bg-indigo-700 disabled:bg-gray-400 dark:disabled:bg-gray-500 transition-all text-sm sm:text-base"
                             >
-                                {currentQuestionIndex < QUESTIONS_PER_LEVEL - 1 ? 'Next' : 'Finish Level'}
+                                {currentQuestionIndex < QUESTIONS_PER_LEVEL - 1 ? 'Next' : 'Finish Week'}
                             </button>
                         </div>
                     </div>
