@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Neuroscience Quiz</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Data: 120 Cognitive Neuroscience Questions ---
+        const allQuestions = [
+            // --- Assignment 1 — Fundamentals of Cognitive Neuroscience ---
+            { question: "1. The brain area primarily responsible for speech production is:", options: ["a) Wernicke’s area", "b) Broca’s area", "c) Occipital lobe", "d) Temporal pole"], answer: "b) Broca’s area" },
+            { question: "2. The brain area primarily responsible for language comprehension is:", options: ["a) Broca’s area", "b) Wernicke’s area", "c) Motor cortex", "d) Insula"], answer: "b) Wernicke’s area" },
+            { question: "3. Which lobe of the brain is primarily involved in processing visual information?", options: ["a) Frontal lobe", "b) Parietal lobe", "c) Temporal lobe", "d) Occipital lobe"], answer: "d) Occipital lobe" },
+            { question: "4. The somatosensory cortex is located in the:", options: ["a) Frontal lobe", "b) Parietal lobe", "c) Temporal lobe", "d) Occipital lobe"], answer: "b) Parietal lobe" },
+            { question: "5. The main function of the corpus callosum is to:", options: ["a) Regulate hormone secretion", "b) Connect the two cerebral hemispheres", "c) Control balance and coordination", "d) Generate emotional responses"], answer: "b) Connect the two cerebral hemispheres" },
+            { question: "6. The neuron doctrine was proposed by:", options: ["a) Camillo Golgi", "b) Santiago Ramón y Cajal", "c) Charles Sherrington", "d) Donald Hebb"], answer: "b) Santiago Ramón y Cajal" },
+            { question: "7. The “all-or-none” principle in neural firing means that:", options: ["a) Stronger stimuli cause stronger action potentials", "b) Neurons fire only when threshold is reached, with equal amplitude", "c) Neurons can partially fire under weak stimuli", "d) Action potential amplitude increases with input intensity"], answer: "b) Neurons fire only when threshold is reached, with equal amplitude" },
+            { question: "8. Which of the following brain imaging techniques measures electrical activity directly?", options: ["a) fMRI", "b) PET", "c) EEG", "d) CT"], answer: "c) EEG" },
+            { question: "9. The limbic system is mainly involved in:", options: ["a) Motor coordination", "b) Cognitive planning", "c) Emotion and motivation", "d) Sensory perception"], answer: "c) Emotion and motivation" },
+            { question: "10. The basal ganglia are primarily responsible for:", options: ["a) Visual processing", "b) Voluntary motor control and habit learning", "c) Hormonal regulation", "d) Emotional regulation"], answer: "b) Voluntary motor control and habit learning" },
+
+            // --- Assignment 2 — Sensory Systems & Perception ---
+            { question: "1. The process by which sensory receptors convert physical energy into neural signals is called:", options: ["a) Adaptation", "b) Transduction", "c) Transmission", "d) Modulation"], answer: "b) Transduction" },
+            { question: "2. The primary visual cortex (V1) is located in the:", options: ["a) Temporal lobe", "b) Frontal lobe", "c) Parietal lobe", "d) Occipital lobe"], answer: "d) Occipital lobe" },
+            { question: "3. The dorsal visual stream is responsible for:", options: ["a) Object recognition (“what”)", "b) Motion and spatial location (“where/how”)", "c) Color perception", "d) Auditory localization"], answer: "b) Motion and spatial location (“where/how”)" },
+            { question: "4. The ventral visual stream is primarily responsible for:", options: ["a) Locating objects", "b) Recognizing objects and faces", "c) Coordinating movement", "d) Detecting motion"], answer: "b) Recognizing objects and faces" },
+            { question: "5. The somatotopic organization of the primary somatosensory cortex is often referred to as:", options: ["a) The sensory grid", "b) The motor homunculus", "c) The sensory homunculus", "d) The cortical map"], answer: "c) The sensory homunculus" },
+            { question: "6. Which sensory system does NOT relay its information through the thalamus before reaching the cortex?", options: ["a) Vision", "b) Audition", "c) Olfaction", "d) Touch"], answer: "c) Olfaction" },
+            { question: "7. The cochlea in the inner ear is responsible for:", options: ["a) Balancing the body", "b) Detecting sound frequencies", "c) Controlling auditory reflexes", "d) Amplifying sound in the middle ear"], answer: "b) Detecting sound frequencies" },
+            { question: "8. The retina contains which two main types of photoreceptor cells?", options: ["a) Bipolar and ganglion cells", "b) Rods and cones", "c) Amacrine and horizontal cells", "d) On-center and off-center cells"], answer: "b) Rods and cones" },
+            { question: "9. The vestibular system is located in the:", options: ["a) Cochlea", "b) Semicircular canals and otolith organs", "c) Middle ear ossicles", "d) Parietal cortex"], answer: "b) Semicircular canals and otolith organs" },
+            { question: "10. The ability to detect changes or differences between two sensory stimuli is known as:", options: ["a) Absolute threshold", "b) Just Noticeable Difference (JND)", "c) Signal detection", "d) Adaptation threshold"], answer: "b) Just Noticeable Difference (JND)" },
+
+            // --- Assignment 3 — Neural Communication & Brain Function ---
+            { question: "1. The gap between two communicating neurons is called the:", options: ["a) Axon hillock", "b) Synaptic cleft", "c) Dendritic spine", "d) Myelin sheath"], answer: "b) Synaptic cleft" },
+            { question: "2. The resting membrane potential of a typical neuron is approximately:", options: ["a) +70 mV", "b) +30 mV", "c) -55 mV", "d) -70 mV"], answer: "d) -70 mV" },
+            { question: "3. The refractory period ensures that:", options: ["a) Action potentials can travel in both directions", "b) Action potentials are faster", "c) Action potentials travel in only one direction", "d) The neuron does not need ATP"], answer: "c) Action potentials travel in only one direction" },
+            { question: "4. Which ion’s influx is primarily responsible for neurotransmitter release at the synapse?", options: ["a) Sodium (Na⁺)", "b) Potassium (K⁺)", "c) Calcium (Ca²⁺)", "d) Chloride (Cl⁻)"], answer: "c) Calcium (Ca²⁺)" },
+            { question: "5. Myelin sheaths around axons help by:", options: ["a) Slowing down signal conduction", "b) Preventing neurotransmitter release", "c) Increasing the speed of signal conduction", "d) Increasing the neuron’s surface area"], answer: "c) Increasing the speed of signal conduction" },
+            { question: "6. Which neurotransmitter is most associated with learning and memory?", options: ["a) Serotonin", "b) Dopamine", "c) Acetylcholine", "d) GABA"], answer: "c) Acetylcholine" },
+            { question: "7. The “all-or-none” principle of action potentials means that:", options: ["a) The neuron fires partially depending on stimulus strength", "b) Once threshold is reached, the neuron fires completely or not at all", "c) The amplitude of the action potential varies", "d) The strength of the stimulus changes firing speed"], answer: "b) Once threshold is reached, the neuron fires completely or not at all" },
+            { question: "8. Which part of the neuron receives most of the synaptic input?", options: ["a) Axon terminal", "b) Axon hillock", "c) Dendrites", "d) Node of Ranvier"], answer: "c) Dendrites" },
+            { question: "9. Which neurotransmitter is primarily inhibitory in the central nervous system?", options: ["a) GABA", "b) Glutamate", "c) Dopamine", "d) Norepinephrine"], answer: "a) GABA" },
+            { question: "10. The main excitatory neurotransmitter in the brain is:", options: ["a) GABA", "b) Acetylcholine", "c) Glutamate", "d) Dopamine"], answer: "c) Glutamate" },
+
+            // --- Assignment 4 — Brain Anatomy, Function, and Neuroimaging ---
+            { question: "1. The brain structure responsible for coordination, posture, and balance is:", options: ["a) Cerebellum", "b) Medulla", "c) Hippocampus", "d) Thalamus"], answer: "a) Cerebellum" },
+            { question: "2. The limbic system is primarily involved in:", options: ["a) Balance and motor coordination", "b) Breathing and heart rate", "c) Emotion, motivation, and memory", "d) Vision and auditory processing"], answer: "c) Emotion, motivation, and memory" },
+            { question: "3. The corpus callosum connects:", options: ["a) The two hemispheres of the brain", "b) The cerebrum to the cerebellum", "c) The brainstem to the spinal cord", "d) The thalamus to the hypothalamus"], answer: "a) The two hemispheres of the brain" },
+            { question: "4. The lobe of the brain responsible for executive functions like planning and decision-making is:", options: ["a) Parietal lobe", "b) Frontal lobe", "c) Occipital lobe", "d) Temporal lobe"], answer: "b) Frontal lobe" },
+            { question: "5. The visual cortex is located in the:", options: ["a) Frontal lobe", "b) Temporal lobe", "c) Parietal lobe", "d) Occipital lobe"], answer: "d) Occipital lobe" },
+            { question: "6. The hippocampus plays a critical role in:", options: ["a) Regulating hunger and thirst", "b) Coordinating motor activity", "c) Forming new memories", "d) Controlling heart rate"], answer: "c) Forming new memories" },
+            { question: "7. The hypothalamus is involved in:", options: ["a) Voluntary movement", "b) Visual processing", "c) Hormonal regulation and homeostasis", "d) Memory formation"], answer: "c) Hormonal regulation and homeostasis" },
+            { question: "8. The structure that acts as the brain’s relay station for sensory information (except smell) is:", options: ["a) Amygdala", "b) Thalamus", "c) Hippocampus", "d) Pons"], answer: "b) Thalamus" },
+            { question: "9. In neuroimaging, fMRI primarily measures:", options: ["a) Electrical activity of neurons", "b) Magnetic fields from action potentials", "c) Blood-oxygen-level-dependent (BOLD) signals", "d) Glucose metabolism directly"], answer: "c) Blood-oxygen-level-dependent (BOLD) signals" },
+            { question: "10. Which imaging method provides the highest temporal resolution?", options: ["a) fMRI", "b) EEG", "c) PET", "d) CT"], answer: "b) EEG" },
+
+            // --- Assignment 5 — Sensory Systems and Perception ---
+            { question: "1. The photoreceptors responsible for color vision in bright light are:", options: ["a) Rods", "b) Cones", "c) Bipolar cells", "d) Ganglion cells"], answer: "b) Cones" },
+            { question: "2. The primary auditory cortex is located in which lobe of the brain?", options: ["a) Frontal lobe", "b) Temporal lobe", "c) Occipital lobe", "d) Parietal lobe"], answer: "b) Temporal lobe" },
+            { question: "3. Which of the following is NOT a type of mechanoreceptor in the skin?", options: ["a) Meissner’s corpuscle", "b) Pacinian corpuscle", "c) Ruffini ending", "d) Rod cell"], answer: "d) Rod cell" },
+            { question: "4. The region of the retina with the highest visual acuity is the:", options: ["a) Optic disc", "b) Fovea", "c) Peripheral retina", "d) Macula"], answer: "b) Fovea" },
+            { question: "5. Which structure converts sound vibrations into neural signals?", options: ["a) Tympanic membrane", "b) Ossicles", "c) Cochlea", "d) Semicircular canals"], answer: "c) Cochlea" },
+            { question: "6. The olfactory bulb is directly connected to the:", options: ["a) Thalamus", "b) Hippocampus", "c) Limbic system", "d) Cerebellum"], answer: "c) Limbic system" },
+            { question: "7. The somatosensory cortex is organized in a “map” known as the:", options: ["a) Retinotopic map", "b) Tonotopic map", "c) Somatotopic map (homunculus)", "d) Cortical column"], answer: "c) Somatotopic map (homunculus)" },
+            { question: "8. Which type of sensory receptor is responsible for detecting temperature?", options: ["a) Photoreceptors", "b) Thermoreceptors", "c) Chemoreceptors", "d) Mechanoreceptors"], answer: "b) Thermoreceptors" },
+            { question: "9. The vestibular system helps maintain:", options: ["a) Smell and taste", "b) Body temperature", "c) Balance and spatial orientation", "d) Blood pressure"], answer: "c) Balance and spatial orientation" },
+            { question: "10. The brain area responsible for integrating visual motion information is the:", options: ["a) V1 (Primary Visual Cortex)", "b) V2", "c) MT/V5 area", "d) Inferior temporal cortex"], answer: "c) MT/V5 area" },
+
+            // --- Assignment 6 — Learning, Memory, and Neural Plasticity ---
+            { question: "1. The process by which long-term memories are formed from short-term ones is known as:", options: ["a) Encoding", "b) Consolidation", "c) Retrieval", "d) Rehearsal"], answer: "b) Consolidation" },
+            { question: "2. The main brain structure involved in the formation of new declarative memories is:", options: ["a) Amygdala", "b) Hippocampus", "c) Prefrontal cortex", "d) Cerebellum"], answer: "b) Hippocampus" },
+            { question: "3. The strengthening of synapses based on recent patterns of activity is called:", options: ["a) Synaptic pruning", "b) Long-term potentiation (LTP)", "c) Long-term depression (LTD)", "d) Habituation"], answer: "b) Long-term potentiation (LTP)" },
+            { question: "4. The reduction in response strength after repeated exposure to a non-threatening stimulus is known as:", options: ["a) Sensitization", "b) Habituation", "c) Conditioning", "d) Extinction"], answer: "b) Habituation" },
+            { question: "5. The neurotransmitter most strongly associated with reward and reinforcement learning is:", options: ["a) Serotonin", "b) Dopamine", "c) Acetylcholine", "d) GABA"], answer: "b) Dopamine" },
+            { question: "6. The cerebellum is primarily involved in which type of learning?", options: ["a) Declarative learning", "b) Procedural learning", "c) Episodic learning", "d) Semantic learning"], answer: "b) Procedural learning" },
+            { question: "7. The NMDA receptor is critical for which neural process?", options: ["a) Inhibitory signaling", "b) Long-term potentiation (LTP)", "c) Axonal pruning", "d) Action potential initiation"], answer: "b) Long-term potentiation (LTP)" },
+            { question: "8. The process of forgetting newly learned information when old memories interfere is known as:", options: ["a) Proactive interference", "b) Retroactive interference", "c) Amnesia", "d) Repression"], answer: "a) Proactive interference" },
+            { question: "9. Which brain region is most associated with working memory?", options: ["a) Hippocampus", "b) Prefrontal cortex", "c) Amygdala", "d) Occipital lobe"], answer: "b) Prefrontal cortex" },
+            { question: "10. Long-term depression (LTD) refers to:", options: ["a) The loss of neurons after injury", "b) A weakening of synaptic strength", "c) Reduced neurotransmitter release", "d) Synaptic pruning in development"], answer: "b) A weakening of synaptic strength" },
+
+            // --- Assignment 7 — Language, Speech, and Communication ---
+            { question: "1. Mutations in —--------- cause disabilities in speech and language processing.", options: ["a) IL6", "b) ESR1", "c) FOXP2", "d) TGFBI"], answer: "c) FOXP2" },
+            { question: "2. The smallest meaningful lexical term in a sentence is —---------------", options: ["a) Semantics", "b) Syllables", "c) Morphemes", "d) Phonemes"], answer: "c) Morphemes" },
+            { question: "3. In non-human primates, the direct connection from LMC (laryngeal motor cortex) to ------------, which directly controls the laryngeal muscles, does not exist.", options: ["a) PAG (periaqueductal gray)", "b) ACC (anterior cingulate cortex)", "c) Nucleus Ambiguus", "d) Secondary motor cortex"], answer: "c) Nucleus Ambiguus" },
+            { question: "4. —---------- is responsible for the planning of speech production.", options: ["a) Brodmann Areas 45/46", "b) Brodmann Areas 45/44", "c) Brodmann Areas 22", "d) Brodmann Areas 41/42"], answer: "b) Brodmann Areas 45/44" },
+            { question: "5. Lack of invariance in speech perception means:", options: ["a) The acoustic cues are same, leading to same perceptual representation", "b) The acoustic cues are different, leading to same perceptual representation", "c) The acoustic cues are same, leading to different perceptual representation", "d) The acoustic cues are different, leading to different perceptual representation"], answer: "b) The acoustic cues are different, leading to same perceptual representation" },
+            { question: "6. Which of the following is not a symptom of Autism Spectrum Disorder (ASD)?", options: ["a) Impaired reciprocal social interaction", "b) Restricted, repetitive behavior or circumscribed interests", "c) Disordered verbal and nonverbal communication", "d) None of the above"], answer: "d) None of the above" },
+            { question: "7. “Apraxia of Speech (AOS) is a motor speech disorder affecting both children and adults.” How many statements are true?\nS1: AOS represents a disruption of the translation of linguistic units into actual speech movements.\nS2: AOS is distinct from problems with phonological processing or motor execution.\nS3: AOS is considered the quintessential disorder of speech motor planning/programming.\nS4: Apraxia reflects impairment at the linguistic level and the neuromuscular level.", options: ["a) Zero", "b) One", "c) Three", "d) Four"], answer: "c) Three" },
+            { question: "8. Damage to Wernicke’s area is characterized by the inability to:", options: ["a) Produce speech", "b) Use correct grammar", "c) Comprehend language", "d) Recognize a melody"], answer: "c) Comprehend language" },
+            { question: "9. Which among the following statements are true?", options: ["a) In human speech, the uncertainty of words uttered one after the other gradually decreases.", "b) In human speech, the uncertainty of words forming meaningful sentences gradually increases.", "c) In songbirds, the notes produced are sequentially arranged and not randomly placed.", "d) In songbirds, even though the notes are randomly placed, it’s of the same energy level."], answer: ["a) In human speech, the uncertainty of words uttered one after the other gradually decreases.", "c) In songbirds, the notes produced are sequentially arranged and not randomly placed."] },
+            { question: "10. The opening between the vocal folds, crucial in producing vowels and voiced consonants, is:", options: ["a) Vocal tract", "b) Arytenoid cartilages", "c) Glottis", "d) Pharynx"], answer: "c) Glottis" },
+
+            // --- Assignment 8 — Neural Control of Movement & Motor Systems ---
+            { question: "1. Which part of the brain is primarily responsible for the coordination of voluntary motor movement, balance, and equilibrium?", options: ["a) Basal ganglia", "b) Cerebellum", "c) Thalamus", "d) Motor cortex"], answer: "b) Cerebellum" },
+            { question: "2. The corticospinal tract originates from which cortical area?", options: ["a) Premotor cortex", "b) Primary motor cortex (M1)", "c) Supplementary motor area", "d) Prefrontal cortex"], answer: "b) Primary motor cortex (M1)" },
+            { question: "3. Which of the following is not part of the basal ganglia?", options: ["a) Putamen", "b) Caudate nucleus", "c) Globus pallidus", "d) Thalamus"], answer: "d) Thalamus" },
+            { question: "4. Parkinson’s disease primarily involves degeneration of neurons in which region?", options: ["a) Subthalamic nucleus", "b) Substantia nigra pars compacta", "c) Globus pallidus externus", "d) Striatum"], answer: "b) Substantia nigra pars compacta" },
+            { question: "5. The premotor cortex is mainly involved in:", options: ["a) Execution of fine motor movement", "b) Planning and selection of movements", "c) Balance and posture control", "d) Reflexive movement"], answer: "b) Planning and selection of movements" },
+            { question: "6. The supplementary motor area (SMA) is crucial for:", options: ["a) Bimanual coordination and internally generated movement sequences", "b) Reflexive motor responses", "c) Posture control", "d) Visual-motor coordination"], answer: "a) Bimanual coordination and internally generated movement sequences" },
+            { question: "7. The basal ganglia influence movement by:", options: ["a) Directly sending projections to spinal motor neurons", "b) Modulating motor signals via the thalamus", "c) Controlling sensory input to the cortex", "d) Generating reflex arcs"], answer: "b) Modulating motor signals via the thalamus" },
+            { question: "8. The cerebellum receives motor command copies (efference copies) to:", options: ["a) Generate reflexive motor patterns", "b) Compare intended and actual movement for error correction", "c) Inhibit motor cortex activity", "d) Control autonomic responses"], answer: "b) Compare intended and actual movement for error correction" },
+            { question: "9. Which of the following is a hallmark of cerebellar damage?", options: ["a) Muscle rigidity", "b) Tremor at rest", "c) Intention tremor and ataxia", "d) Spasticity"], answer: "c) Intention tremor and ataxia" },
+            { question: "10. Mirror neurons, involved in both performing and observing actions, are found mainly in:", options: ["a) Occipital cortex", "b) Inferior frontal gyrus and inferior parietal lobule", "c) Hippocampus", "d) Basal ganglia"], answer: "b) Inferior frontal gyrus and inferior parietal lobule" },
+
+            // --- Assignment 9 — Neural Development, Plasticity & Critical Periods ---
+            { question: "1. Type of memory that is involved with facts or memories of past is _____ and ____ phenomenon is responsible for its formation in Hippocampus regions", options: ["a) Associative Memory, Short Term Potentiation", "b) Non-Associative Memory, Short Term Facilitation", "c) Declarative Memory, Long Term Potentiation", "d) Declarative Memory, Long Term Depression"], answer: "c) Declarative Memory, Long Term Potentiation" },
+            { question: "2. Decrease in the spine density and number of synapses in the dorsolateral prefrontal cortex is the reason for:", options: ["a) Major depressive disorder (MDD) and Post-traumatic stress disorder (PTSD)", "b) Schizophrenia", "c) Autism spectrum disorder (ASD)", "d) MDD and ASD"], answer: "a) Major depressive disorder (MDD) and Post-traumatic stress disorder (PTSD)" },
+            { question: "3. Suppose an organism (like Aplysia) is repeatedly given mildly noxious stimuli. What happens when suddenly the strength of the noxious stimuli is increased?", options: ["a) The response remains the same, caused by Glutamate", "b) The response increases, caused by Serotonin", "c) The response decreases, caused by Acetylcholine", "d) The response decreases, caused by Serotonin"], answer: "b) The response increases, caused by Serotonin" },
+            { question: "4. Which neurotransmitter is responsible for the brain to calculate Reward Prediction Error?", options: ["a) Serotonin", "b) Acetylcholine", "c) GABA", "d) Dopamine"], answer: "d) Dopamine" },
+            { question: "5. Which of the following statements are true in the case of schizophrenia?\n\nThe number of excitatory synapses reduces in young adulthood at the start of psychosis.\n\nThe major brain areas associated are prefrontal cortex, sensory and motor cortex, and parietal cortex (for multisensory inputs).\n\nNumber of inhibitory synapses increases in infancy.", options: ["a) 1, 2, and 3", "b) All of the above", "c) 1 and 2", "d) 3 and 2"], answer: "c) 1 and 2" },
+            { question: "6. In an experiment, a mouse was taught to lick water when a particular image was shown. What kind of learning is this?", options: ["a) Habituation", "b) Sensitization", "c) Associative", "d) Declarative"], answer: "c) Associative" },
+            { question: "7. Structural plasticity can occur by:", options: ["a) Changing neuron type from excitatory to inhibitory", "b) Formation of new spine", "c) Formation of more ionotropic receptors", "d) Removal of existing spines"], answer: "b) Formation of new spine" },
+            { question: "8. In auditory cortex, the expansion of a particular frequency region is possible in the tonotopic arrangement by exposing the subject to that frequency during:", options: ["a) Spontaneous activity oscillations", "b) Critical period", "c) Beginning of post-natal period", "d) After critical period"], answer: "b) Critical period" },
+            { question: "9. Evidence for formation of new neurons that integrate into existing circuits is observed in which regions of brain?", options: ["a) Cochlear Nucleus", "b) Olfactory Bulb", "c) Hypothalamus", "d) Hippocampus"], answer: ["b) Olfactory Bulb", "d) Hippocampus"] },
+            { question: "10. Which among the following statements are true?\n\nActivity-dependent cues can play a role in the onset and offset of the critical period.\n\nCritical period can be delayed by not exposing any visual or auditory stimulus to the cortex.\n\nFrequency exposure cannot be changed during the critical period.", options: ["a) 1 and 2", "b) Only 1", "c) 2 and 3", "d) 1, 2, and 3"], answer: "a) 1 and 2" },
+
+            // --- Assignment 10 — Language, Speech & Communication Systems --- (Duplicate of 7)
+            { question: "1. Mutations in —--------- causes disabilities in speech and language processing", options: ["a) IL6", "b) ESR1", "c) FOXP2", "d) TGFBI"], answer: "c) FOXP2" },
+            { question: "2. The smallest meaningful lexical term in a sentence is —---------------", options: ["a) Semantics", "b) Syllables", "c) Morphemes", "d) Phonemes"], answer: "c) Morphemes" },
+            { question: "3. In non-human primates, the direct connection from LMC (laryngeal motor cortex) to ------------, which directly controls the laryngeal muscles, does not exist.", options: ["a) PAG (periaqueductal gray)", "b) ACC (anterior cingulate cortex)", "c) Nucleus Ambiguus", "d) Secondary motor cortex"], answer: "c) Nucleus Ambiguus" },
+            { question: "4. —---------- is responsible for the planning of speech production", options: ["a) Brodmann Areas 45/46", "b) Brodmann Areas 45/44", "c) Brodmann Area 22", "d) Brodmann Areas 41/42"], answer: "b) Brodmann Areas 45/44" },
+            { question: "5. Lack of invariance in speech perception means:", options: ["a) The acoustic cues are same, leading to same perceptual representation", "b) The acoustic cues are different, leading to same perceptual representation", "c) The acoustic cues are same, leading to different perceptual representation", "d) The acoustic cues are different, leading to different perceptual representation"], answer: "b) The acoustic cues are different, leading to same perceptual representation" },
+            { question: "6. Which of the following is an incorrect symptom of Autism Spectrum Disorder (ASD):", options: ["a) Impaired reciprocal social interaction", "b) Restricted, repetitive behaviour or circumscribed interests", "c) Disordered verbal and nonverbal communication", "d) None of the above"], answer: "d) None of the above" },
+            { question: "7. “Apraxia of speech (AOS) is a motor speech disorder affecting both children and adults.” How many statements are true:\nS1: AOS represents a disruption of the translation of linguistic units into actual speech movements.\nS2: AOS is distinct from problems with phonological processing or motor execution.\nS3: AOS is considered the quintessential disorder of speech motor planning/programming.\nS4: Apraxia reflects impairment at the linguistic level and the neuromuscular level.", options: ["a) Zero", "b) One", "c) Three", "d) Four"], answer: "c) Three" },
+            { question: "8. Damage to Wernicke's area is characterized by the inability to:", options: ["a) Produce speech", "b) Use correct grammar", "c) Comprehend language", "d) Recognize a melody"], answer: "c) Comprehend language" },
+            { question: "9. Which among the following statements are true:", options: ["a) In human speech, the uncertainty of words uttered one after the other gradually decreases.", "b) In human speech, the uncertainty of words forming a meaningful sentence gradually increases.", "c) In songbirds, the notes produced are sequentially arranged and not randomly placed.", "d) In songbirds, even though the notes are randomly placed, they are of the same energy level."], answer: ["a) In human speech, the uncertainty of words uttered one after the other gradually decreases.", "c) In songbirds, the notes produced are sequentially arranged and not randomly placed."] },
+            { question: "10. The opening between the vocal folds which is crucial in producing vowels and voiced consonants is:", options: ["a) Vocal tract", "b) Arytenoid cartilages", "c) Glottis", "d) Pharynx"], answer: "c) Glottis" },
+
+            // --- Assignment 11 — Cognitive Control, Creativity & Decision-Making ---
+            { question: "1. The anterior cingulate cortex (ACC) is primarily involved in:", options: ["a) Visual processing", "b) Motor control", "c) Conflict monitoring and error detection", "d) Memory retrieval"], answer: "c) Conflict monitoring and error detection" },
+            { question: "2. The dorsolateral prefrontal cortex (dlPFC) plays a crucial role in:", options: ["a) Automatic sensory processing", "b) Emotional regulation only", "c) Working memory and executive control", "d) Reflexive motor response"], answer: "c) Working memory and executive control" },
+            { question: "3. In decision-making, the orbitofrontal cortex (OFC) is responsible for:", options: ["a) Evaluating reward values and outcome prediction", "b) Regulating motor reflexes", "c) Storing long-term memories", "d) Perceiving auditory signals"], answer: "a) Evaluating reward values and outcome prediction" },
+            { question: "4. “Hot” executive functions are related to:", options: ["a) Purely logical reasoning", "b) Emotional and motivational control during decision-making", "c) Motor sequence learning", "d) Language syntax generation"], answer: "b) Emotional and motivational control during decision-making" },
+            { question: "5. The Stroop task primarily measures:", options: ["a) Emotional reactivity", "b) Cognitive inhibition and attentional control", "c) Visual perception accuracy", "d) Working memory span"], answer: "b) Cognitive inhibition and attentional control" },
+            { question: "6. Which brain region is often more active during creative idea generation (“divergent thinking”)?", options: ["a) Amygdala", "b) Default Mode Network (DMN)", "c) Occipital cortex", "d) Somatosensory cortex"], answer: "b) Default Mode Network (DMN)" },
+            { question: "7. The Iowa Gambling Task assesses:", options: ["a) Logical reasoning ability", "b) Emotional decision-making and reward-based learning", "c) Short-term memory", "d) Visual recognition"], answer: "b) Emotional decision-making and reward-based learning" },
+            { question: "8. Damage to the ventromedial prefrontal cortex (vmPFC) results in:", options: ["a) Loss of visual perception", "b) Deficits in emotional decision-making and social behavior", "c) Language comprehension impairment", "d) Motor paralysis"], answer: "b) Deficits in emotional decision-making and social behavior" },
+            { question: "9. The “dual-process theory” in decision-making distinguishes between:", options: ["a) Fast, automatic, emotional processes and slow, deliberate, analytical processes", "b) Left and right hemisphere processing", "c) Auditory and visual decision systems", "d) Habitual and reflexive responses"], answer: "a) Fast, automatic, emotional processes and slow, deliberate, analytical processes" },
+            { question: "10. During insight-based problem solving (“Aha!” moments), which brain activity pattern is commonly observed?", options: ["a) Increased occipital activity before response", "b) Sudden burst of gamma activity in the right anterior temporal lobe", "c) Sustained theta activity in motor cortex", "d) Continuous alpha suppression in parietal cortex"], answer: "b) Sudden burst of gamma activity in the right anterior temporal lobe" },
+
+            // --- Assignment 12 — Neural Coding, Plasticity & Measurement Techniques ---
+            { question: "1. The receptive fields of —---------in mammalian primary visual cortex can be characterized as being spatially localized, oriented and bandpass.", options: ["a) Complex cells", "b) Hypercomplex cells", "c) Simple cells", "d) None of the above"], answer: "c) Simple cells" },
+            { question: "2. When the features are optimized for coding either natural sounds or speech, they show striking similarities to time-domain cochlear filter estimates, having a frequency-bandwidth dependence similar to that of —-----------------.", options: ["a) Auditory nerve fibers", "b) Cochlear nucleus", "c) Inferior colliculus", "d) All of the above"], answer: "a) Auditory nerve fibers" },
+            { question: "3. Methodology that can be adopted to measure the single neuronal response in deep brain areas of a human subject:", options: ["a) Functional MRI", "b) Multi-electrode array (MEA)", "c) Electrocorticography (ECoG)", "d) None of the above"], answer: "c) Electrocorticography (ECoG)" },
+            { question: "4. —------------------- are observed when synapses are stimulated with repetitive pulses, by means of prolonged trains of stimuli applied at high frequencies.", options: ["a) Spike-timing-dependent plasticity (STDP)", "b) Post-tetanic potentiation (PTP)", "c) Bursting", "d) None of the above"], answer: "b) Post-tetanic potentiation (PTP)" },
+            { question: "5. The dynamic activity of neurons which repeatedly fires discrete groups of spikes can:", options: ["a) Cause long-term potentiation and affect synaptic plasticity more than single spikes", "b) Have more informational content at unitary levels", "c) Encode different features of sensory input than single spikes", "d) All of the above"], answer: "d) All of the above" },
+            { question: "6. Which of the following statements are true:", options: ["a) With optogenetics and chemogenetics, it’s possible to test if a specific neuron in an area is involved in behavior", "b) fMRI can record single-neuron responses in humans", "c) The genome plays a major role in structural brain connectivity", "d) Spike rate alone can fully explain stimulus discrimination"], answer: ["a) With optogenetics and chemogenetics, it’s possible to test if a specific neuron in an area is involved in behavior", "c) The genome plays a major role in structural brain connectivity"] },
+            { question: "7. —-------------- transforms intact biological tissue into a hybrid form in which tissue components are removed and replaced with exogenous elements for increased accessibility and facilitates rapid extraction of anatomical-projection information.", options: ["a) Chemogenetics", "b) Clarity", "c) Nissl staining", "d) Immunohistochemistry (IHC)"], answer: "b) Clarity" },
+            { question: "8. Mark the functions of glial cells:", options: ["a) Supply nutrients and oxygen to neurons", "b) Destroy and remove dead neuron carcasses", "c) Propagate electrical and chemical signals", "d) All of the above"], answer: "d) All of the above" },
+            { question: "9. —------------- regulates cell development, structural stabilization of neuronal processes, and synaptic contacts during CNS maturation.", options: ["a) Astrocytes", "b) Oligodendrocytes", "c) Microglia", "d) Extracellular matrix"], answer: "a) Astrocytes" },
+            { question: "10. In spike-timing-dependent plasticity (STDP), ΔW > 0 (change in synaptic weight) implies:", options: ["a) Postsynaptic neuron spikes after the presynaptic neuron", "b) Postsynaptic neuron spikes before the presynaptic neuron", "c) Presynaptic spikes occur after postsynaptic potentials", "d) None of the above"], answer: "a) Postsynaptic neuron spikes after the presynaptic neuron" }
+        ];
+
+
+        const QUESTIONS_PER_LEVEL = 10;
+
+        // --- Helper Function ---
+        const areArraysEqual = (arr1, arr2) => {
+            if (arr1.length !== arr2.length) return false;
+            const sorted1 = [...arr1].sort();
+            const sorted2 = [...arr2].sort();
+            return sorted1.every((value, index) => value === sorted2[index]);
+        };
+
+        // --- Question List Modal Component ---
+        const QuestionsList = ({ allQuestions, onClose }) => (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                    <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">All Questions</h2>
+                        <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 text-3xl font-light">&times;</button>
+                    </div>
+                    <div className="p-6 overflow-y-auto">
+                        <div className="space-y-6">
+                            {allQuestions.map((q, index) => {
+                                const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+                                return (
+                                <div key={index} className="border-b dark:border-gray-700 pb-4 last:border-b-0">
+                                    <p className="font-semibold text-gray-800 dark:text-gray-100">
+                                        <span className="font-bold text-blue-600">Q{index + 1}:</span> {q.question}
+                                    </p>
+                                    <ul className="mt-2 space-y-1 pl-6">
+                                        {q.options.map((opt, i) => {
+                                            const isCorrect = correctAnswers.includes(opt);
+                                            return (
+                                            <li key={i} className={`text-gray-600 dark:text-gray-400 ${isCorrect ? 'font-bold text-green-700 dark:text-green-400' : ''}`}>
+                                                - {opt}
+                                                {isCorrect && <span className="text-green-600 dark:text-green-400 ml-2">(Correct)</span>}
+                                            </li>
+                                        )})}
+                                    </ul>
+                                </div>
+                            )})}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+        
+        // --- Header Component ---
+        const Header = ({ onShowList, darkMode, setDarkMode }) => {
+            return (
+                <div className="fixed top-4 right-4 z-20 flex gap-3">
+                    <button
+                        onClick={onShowList}
+                        className="bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all transform hover:scale-105"
+                    >
+                        List of Questions
+                    </button>
+                    <button
+                        onClick={() => setDarkMode(prev => !prev)}
+                        className="bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all transform hover:scale-105"
+                    >
+                        {darkMode ? '☀️ Light' : '🌙 Dark'}
+                    </button>
+                </div>
+            );
+        };
+
+        // --- Main App Component ---
+        function App() {
+            const [gameState, setGameState] = React.useState('start'); // 'start', 'levelGate', 'playing', 'levelResult', 'finished'
+            const [currentLevel, setCurrentLevel] = React.useState(0);
+            const [levelScore, setLevelScore] = React.useState(0);
+            const [userAnswers, setUserAnswers] = React.useState(Array(QUESTIONS_PER_LEVEL).fill([]));
+            const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
+            const [showQuestionsList, setShowQuestionsList] = React.useState(false);
+            const [darkMode, setDarkMode] = React.useState(false);
+
+            React.useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }, [darkMode]);
+
+
+            const totalLevels = allQuestions.length / QUESTIONS_PER_LEVEL;
+
+            const levelQuestions = React.useMemo(() => allQuestions.slice(
+                currentLevel * QUESTIONS_PER_LEVEL,
+                (currentLevel + 1) * QUESTIONS_PER_LEVEL
+            ), [currentLevel]);
+
+            const startLevel = () => {
+                setCurrentQuestionIndex(0);
+                setUserAnswers(Array(QUESTIONS_PER_LEVEL).fill([]));
+                setGameState('playing');
+            };
+
+            const handleAnswerSelect = (option, questionIndex) => {
+                const newAnswers = [...userAnswers];
+                const currentSelection = newAnswers[questionIndex] || [];
+                const question = levelQuestions[questionIndex];
+                const isMulti = Array.isArray(question.answer);
+
+                if (isMulti) {
+                    if (currentSelection.includes(option)) {
+                        newAnswers[questionIndex] = currentSelection.filter(item => item !== option);
+                    } else {
+                        newAnswers[questionIndex] = [...currentSelection, option];
+                    }
+                } else {
+                    // Single select, just replace
+                    newAnswers[questionIndex] = [option];
+                }
+                
+                setUserAnswers(newAnswers);
+            };
+
+            const calculateScore = () => {
+                let score = 0;
+                for (let i = 0; i < levelQuestions.length; i++) {
+                    const question = levelQuestions[i];
+                    const userAnswer = userAnswers[i] || [];
+                    const correctAnswer = Array.isArray(question.answer) ? question.answer : [question.answer];
+                    
+                    if (areArraysEqual(userAnswer, correctAnswer)) {
+                        score++;
+                    }
+                }
+                setLevelScore(score);
+                setGameState('levelResult');
+            };
+            
+            const handleNextLevel = () => {
+                if (currentLevel < totalLevels - 1) {
+                    setCurrentLevel(prev => prev + 1);
+                    setGameState('levelGate');
+                } else {
+                    setGameState('finished');
+                }
+            };
+
+            const restartGame = () => {
+                setCurrentLevel(0);
+                setGameState('start');
+            }
+
+            // --- Components for different game states ---
+
+            const StartScreen = () => (
+                <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Cognitive Neuroscience Quiz</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">Test your knowledge across {totalLevels} assignments of Cognitive Neuroscience!</p>
+                    <button
+                        onClick={() => setGameState('levelGate')}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Start Game
+                    </button>
+                </div>
+            );
+            
+            const LevelGate = () => {
+                const isLastLevel = currentLevel >= totalLevels - 1;
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">Assignment {currentLevel + 1}</h1>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">You need a perfect score to unlock the next Assignment.</p>
+                        <div className="flex flex-col gap-4">
+                            <button
+                                onClick={startLevel}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                            >
+                                Begin Assignment
+                            </button>
+                            {!isLastLevel && (
+                                <button
+                                    onClick={handleNextLevel}
+                                    className="w-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                                >
+                                    Skip Assignment
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            
+            const LevelResult = ({ levelScore, levelQuestions, userAnswers }) => {
+                const isPerfect = levelScore === QUESTIONS_PER_LEVEL;
+                const isLastLevel = currentLevel >= totalLevels - 1;
+
+                return (
+                    <div className="text-center">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                            {isPerfect ? 'Assignment Complete!' : 'Assignment Results'}
+                        </h1>
+                        <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6">
+                            Your Score: {levelScore} / {QUESTIONS_PER_LEVEL}
+                        </p>
+                        
+                        {/* --- Results Breakdown --- */}
+                        <div className="text-left max-h-60 overflow-y-auto border-t border-b dark:border-gray-700 py-4 px-2 space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 sticky top-0 bg-white dark:bg-gray-800 pb-2">Your Results</h3>
+                            {levelQuestions.map((q, index) => {
+                                const ua = userAnswers[index] || [];
+                                const ca = Array.isArray(q.answer) ? q.answer : [q.answer];
+                                const isCorrect = areArraysEqual(ua, ca);
+
+                                return (
+                                    <div key={index} className={`p-3 rounded-lg ${isCorrect ? 'bg-green-50 dark:bg-green-900/50' : 'bg-red-50 dark:bg-red-900/50'}`}>
+                                        <p className="font-semibold text-gray-800 dark:text-gray-100 flex items-start">
+                                            <span className="mr-2">{isCorrect ? '✅' : '❌'}</span>
+                                            {q.question}
+                                        </p>
+                                        <p className="pl-6 text-sm text-gray-700 dark:text-gray-300 mt-1">
+                                            Your answer: <span className="font-medium">{ua.join(', ') || 'No answer'}</span>
+                                        </p>
+                                        {!isCorrect && (
+                                            <p className="pl-6 text-sm text-green-700 dark:text-green-400 font-semibold">
+                                                Correct answer: {ca.join(', ')}
+                                            </p>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {!isPerfect && !isLastLevel && <p className="text-gray-600 dark:text-gray-400 my-6">You need a perfect score to advance. Let's try again!</p>}
+
+                        <div className="flex flex-col gap-4 mt-6">
+                            {isPerfect ? (
+                                isLastLevel ? (
+                                    <button onClick={() => setGameState('finished')} className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-green-700 shadow-md">
+                                        Finish Game
+                                    </button>
+                                ) : (
+                                     <button onClick={handleNextLevel} className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 shadow-md">
+                                        Next Assignment
+                                    </button>
+                                )
+                            ) : (
+                                 <button onClick={startLevel} className="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-yellow-600 shadow-md">
+                                    Try Again
+                                </button>
+                            )}
+                            {/* Always allow returning to main menu */}
+                            {!isLastLevel && (
+                                 <button onClick={restartGame} className="w-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 font-bold py-3 px-6 rounded-lg text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                                    Main Menu
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const FinishedScreen = () => (
+                 <div className="text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">Congratulations!</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">You have completed all {totalLevels} Assignments!</p>
+                    <button
+                        onClick={restartGame}
+                        className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-md"
+                    >
+                        Play Again
+                    </button>
+                </div>
+            );
+
+            const QuizView = () => {
+                const question = levelQuestions[currentQuestionIndex];
+                const selectedAnswers = userAnswers[currentQuestionIndex] || [];
+                const correctAnswers = Array.isArray(question.answer) ? question.answer : [question.answer];
+                const isMultiSelect = correctAnswers.length > 1;
+
+                const getButtonClass = (option) => {
+                    return selectedAnswers.includes(option) 
+                        ? 'bg-blue-100 dark:bg-blue-900/60 border-blue-500 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700 text-blue-800 dark:text-blue-200' 
+                        : 'bg-white dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600';
+                };
+
+                const renderActionButton = () => {
+                    const isDisabled = selectedAnswers.length === 0;
+
+                    if (currentQuestionIndex < QUESTIONS_PER_LEVEL - 1) {
+                         return (
+                            <button
+                                onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                                disabled={isDisabled}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-blue-800 dark:disabled:text-gray-400 transition-all text-sm sm:text-base col-span-2"
+                            >
+                                Next
+                            </button>
+                        );
+                    } else {
+                        return (
+                            <button
+                                onClick={calculateScore}
+                                disabled={isDisabled}
+                                className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-green-300 dark:disabled:bg-green-800 dark:disabled:text-gray-400 transition-all text-sm sm:text-base col-span-2"
+                            >
+                                Finish Assignment
+                            </button>
+                        );
+                    }
+                };
+
+                return (
+                    <div>
+                        <div className="mb-6">
+                           <div className="flex justify-between items-center mb-2 text-gray-600 dark:text-gray-400 font-medium">
+                                <span>Assignment {currentLevel + 1}</span>
+                                <span>Question {currentQuestionIndex + 1}/{QUESTIONS_PER_LEVEL}</span>
+                           </div>
+                           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                                <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS_PER_LEVEL) * 100}%` }}></div>
+                           </div>
+                        </div>
+
+                        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6 min-h-[8rem] flex items-center">
+                            {question.question}
+                        </h2>
+                        <div className="space-y-3">
+                            {question.options.map((option, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleAnswerSelect(option, currentQuestionIndex)}
+                                    className={`w-full text-left p-4 rounded-lg font-medium transition-all duration-200 border shadow-sm ${getButtonClass(option)}`}
+                                >
+                                    {option}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 grid grid-cols-3 gap-3">
+                            <button
+                                onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                disabled={currentQuestionIndex === 0}
+                                className="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-600 disabled:bg-gray-300 dark:disabled:bg-gray-600 dark:disabled:text-gray-400 transition-all text-sm sm:text-base"
+                            >
+                                Previous
+                            </button>
+                            
+                           {renderActionButton()}
+                        </div>
+                    </div>
+                );
+            };
+            
+            const renderGameState = () => {
+                switch (gameState) {
+                    case 'start': return <StartScreen />;
+                    case 'levelGate': return <LevelGate />;
+                    case 'playing': return <QuizView />;
+                    case 'levelResult': return <LevelResult levelScore={levelScore} levelQuestions={levelQuestions} userAnswers={userAnswers} />;
+                    case 'finished': return <FinishedScreen />;
+                    default: return <StartScreen />;
+                }
+            }
+
+            return (
+                <React.Fragment>
+                    <Header 
+                        onShowList={() => setShowQuestionsList(true)}
+                        darkMode={darkMode}
+                        setDarkMode={setDarkMode}
+                    />
+
+                    {showQuestionsList && <QuestionsList allQuestions={allQuestions} onClose={() => setShowQuestionsList(false)} />}
+                    
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-300">
+                            {renderGameState()}
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
